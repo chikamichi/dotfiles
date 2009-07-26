@@ -1,0 +1,480 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{jd}[2009/05/11 Extension personnelle, V1.1]
+
+\RequirePackage{xkeyval}
+\RequirePackage{ifthen}
+\RequirePackage{xcolor}
+\definecolor{softcyan}{HTML}{5ADCFF}
+\definecolor{bleufonce}{HTML}{525E60}
+\definecolor{bleupages}{HTML}{243774}
+\definecolor{bleupagestotal}{HTML}{0F1F54}
+\definecolor{softyellow}{HTML}{FFE5AE}
+\definecolor{softblack}{HTML}{414141}
+\definecolor{soft2black}{HTML}{1F1F1F}
+
+% gestion des options avec paires key=value
+\@ifundefined{my@unusedlist}{%
+  \let\my@unusedlist\@empty}{}
+\@ifundefined{my@extractkey}{%
+  \def\my@extractkey#1=#2\my@extractkey{#1}}{}
+\newcommand{\ProcessUnusedOptions}[1]{%
+  \let\my@tempa\@empty
+  \let\my@tempb\@empty
+  \@for\CurrentOption:=\my@unusedlist\do{%
+    \expandafter\expandafter\expandafter\def
+    \expandafter\expandafter\expandafter\my@key
+    \expandafter\expandafter\expandafter{%
+      \expandafter\my@extractkey\CurrentOption=\my@extractkey}%
+    \@ifundefined{KV@#1@\my@key}{%
+      \edef\my@tempa{\my@tempa,\CurrentOption,}}{%
+      \edef\my@tempb{\my@tempb,\CurrentOption,}}}%
+  \@for\CurrentOption:=\my@tempa\do{%
+    \ifx\CurrentOption\@empty\else
+      \PackageWarning{jd}{`\CurrentOption' not defined.}\fi}%
+  \edef\my@tempb{%
+    \noexpand\setkeys{#1}{\my@tempb}}%
+  \my@tempb
+  \AtEndOfPackage{\let\@unprocessedoptions\relax}}
+
+% gestion des options simples (sans paires key=value)
+\DeclareOption*{%
+  \expandafter\expandafter\expandafter\def
+  \expandafter\expandafter\expandafter\my@unusedlist
+  \expandafter\expandafter\expandafter{%
+    \expandafter\my@unusedlist\expandafter,%
+    \CurrentOption}}
+
+% booleans pour les options
+\newif \if@fr        \@frfalse
+\newif \if@maths     \@mathsfalse
+\newif \if@tensoriel \@tensorielfalse
+\newif \if@matlab    \@matlabfalse
+\newif \if@chimie    \@chimiefalse
+\newif \if@natbib    \@natbibfalse
+\newif \if@beamer    \@beamerfalse
+\newboolean{beameron}
+\setboolean{beameron}{false}
+
+% déclaration des options simples (les traitements sont à la fin du fichier)
+\DeclareOption{fr}{\@frtrue}
+\DeclareOption{maths}{\@mathstrue}
+\DeclareOption{tensoriel}{\@tensorieltrue}
+\DeclareOption{matlab}{\@matlabtrue}
+\DeclareOption{chimie}{\@chimietrue}
+\DeclareOption{natbib}{\@natbibtrue}
+\DeclareOption{beamer}{\@beamertrue \setboolean{beameron}{true}}
+
+% déclaration des options avec paires key=value
+\newcommand{\pack@languages}{frenchb}
+\define@key{jd}{lang}[english,frenchb]{%
+    \renewcommand{\pack@languages}{#1}%
+}
+\define@key{jd}{logo}{\def\mylogo{#1}}
+%\@ifundefined{mylogo}{\def\mylogo{/home/jd/texmf/tex/latex/img/hand.png}}{}
+\@ifundefined{mylogo}{\def\mylogo{/home/jd/texmf/tex/latex/img/upmc-jaune.png}}{}
+
+% process 'em all
+\ProcessOptions
+\ProcessUnusedOptions{jd}
+
+% chargement des extensions communes
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[\pack@languages]{babel}
+\RequirePackage[cyr]{aeguill}
+\RequirePackage{xspace}
+\RequirePackage[T1]{fontenc}        % polices appropriées pour un rendu pdf
+\RequirePackage{geometry}           % mise en page générale
+\RequirePackage[francais]{layout}
+\RequirePackage{times}              % police classique, portable
+\RequirePackage{textcomp}
+\RequirePackage[normalem]{ulem}
+\RequirePackage{pstricks}
+%\RequirePackage{color}
+\RequirePackage{graphicx}
+\RequirePackage{subfigure}
+\RequirePackage{epstopdf}           % converti les .eps en .pdf à la volée
+%\RequirePackage{psfrag}             % pour laprint
+%\RequirePackage{pstricks-add,pst-plot,pst-node}  % pour fig2tex
+\RequirePackage{url}
+
+% chargement des extensions spécifiques pour les classes (hors options)
+\ifthenelse{\boolean{beameron}}{%
+    % beamer a des attentes particulières
+    % par exemple, il auto-inclus hyperref avec ses propres options
+    \RequirePackage{colortbl}
+    \RequirePackage{multimedia}
+    \RequirePackage{ragged2e}
+    \justifying
+    
+    % déclarations d'intérêt général
+    \date{}
+    \author[jd@vauguet.fr]{Jean-Denis Vauguet}
+
+    % tailles spécifiques, pour le footer
+    \def\Tiny{\fontsize{4pt}{2pt}\selectfont}
+    \def\Gros{\fontsize{16pt}{16pt}\selectfont}
+    
+    % couleurs agréables
+    \hypersetup{
+        linkcolor=softcyan,
+        citecolor=softcyan,
+        filecolor=softcyan,
+        urlcolor=softcyan
+    }
+}%
+{%
+    % packages usuels
+    \RequirePackage{booktabs,multirow}  % macros évoluées pour tabular
+    \RequirePackage[small]{caption}
+    \RequirePackage{wrapfig}
+    \RequirePackage{scrtime}
+    %\RequirePackage[crop=pdfcrop]{pstool}   % essentiellement pour matlabfrag
+    \RequirePackage{fancyhdr}
+    \RequirePackage{titlesec}
+    \RequirePackage[dvipdf]{hyperref}
+
+    % fancy header, ne s'applique pas à beamer
+    \pagestyle{fancy}
+    \cfoot{\thepage}
+    \fancyhead{}
+    \renewcommand{\headrulewidth}{0pt}
+    \renewcommand{\footrulewidth}{0pt}
+    % couleurs agréables
+    \hypersetup{
+        linkcolor=magenta,
+        citecolor=magenta,
+        filecolor=magenta,
+        urlcolor=magenta
+    }
+}
+
+\hypersetup{
+    pdfauthor={Jean-Denis Vauguet <jd@vauguet.fr>},
+    colorlinks=true,
+    pdfborder= 0 0 0,
+    backref=true,
+    pagebackref=true,
+    hyperindex=true,
+    bookmarks=true,
+    bookmarksopen=true,
+    breaklinks=true
+}
+
+% epstopdf settings
+%\AppendGraphicsExtensions{.gif}
+%\AppendGraphicsExtensions{.png}
+%\DeclareGraphicsRule{.gif}{png}{.png}{`convert #1 \noexpand\OutputFile}
+
+% mise en page et espacements
+%\geometry{top=1.5cm, bottom=1.5cm, left=1.5cm, right=1.5cm}
+\fontfamily{ptm}
+%\setlength{\parindent}{0pt}
+\newcommand{\plop}{\vspace{0.5em} \newline}
+\def\thickhrulefill{\leavevmode \leaders \hrule height 1ex \hfill \kern \z@}
+% assoupli les règles internes décidant du placement des images dans le texte (tente d'éviter les pages vides ne contenant qu'une image)
+%\renewcommand{\topfraction}{0.85}
+%\renewcommand{\textfraction}{0.1}
+%\renewcommand{\floatpagefraction}{0.75}
+
+% pour passer outre le comportement de frenchb qui fait la definition des macros au begin document
+\AtBeginDocument{
+\renewcommand{\labelitemi}{$\bullet$}
+}{}
+
+% alias divers
+
+\newcommand{\email}[1]{{\urlstyle{rm}\url{#1}}}
+\newcommand{\web}{\begingroup \urlstyle{tt}\Url}
+\newcommand{\siecle}[1]{\textsc{\romannumeral #1}\textsuperscript{e}~siècle}
+\newcommand{\ie}{\emph{i.e.}~}
+
+% couleurs et fonds colorés
+
+\newcommand{\jaune}[1]{\textcolor{softyellow}{#1}}
+\newcommand{\noir}[1]{\textcolor{softblack}{#1}}
+\newcommand{\bleu}[1]{\textcolor{softcyan}{#1}}
+\newcommand{\fondjaune}[1]{%
+    \colorbox{softyellow}{\textcolor{softblack}{#1}}%
+}
+
+% Unicode
+
+\DeclareUnicodeCharacter{00A0}{\nobreakspace}
+
+% images
+\graphicspath{{img/}}
+
+% commandes personnelles
+\newcommand{\refeq}[1]{(\ref{#1})}
+
+% gestion des options : inclusions de paquets et commandes personnelles
+\if@fr
+    % adaptations pour un document en français
+    \renewcommand{\figurename}{Fig.~}
+    \renewcommand{\tablename}{Table~}
+\fi
+
+\if@maths
+    \RequirePackage{amsmath}
+    \RequirePackage{amssymb}
+    \RequirePackage{cases}
+    \RequirePackage[mathcal,mathbf]{euler}  % polices mathématique droite
+%    \RequirePackage{mathabx}                % symboles de la Terre et du Soleil
+
+    % declaration spécifiques pour les maths
+
+    \newcommand{\boldnabla}{\mbox{\boldmath$\nabla$}}
+
+    \newcommand{\beq}{\begin{equation}}
+    \newcommand{\eeq}{\end{equation}}
+    \newcommand{\beqn}{\begin{equation*}}
+    \newcommand{\eeqn}{\end{equation*}}
+    \newcommand{\beqa}{\begin{align}}
+    \newcommand{\eeqa}{\end{align}}
+    \newcommand{\beqan}{\begin{align*}}
+    \newcommand{\eeqan}{\end{align*}}
+
+    \newcommand{\vectfleche}[1]{\overrightarrow{#1}}
+    \newcommand{\vect}[1]{\textbf{#1}}
+    \newcommand{\vv}{\vect{v}}
+    \newcommand{\vf}{\vect{f}}
+    \newcommand{\vu}{\vect{u}}
+    \newcommand{\vg}{\vect{g}}
+
+    \newcommand{\visc}{\mu}
+    \newcommand{\viscbulk}{\visc_{\textrm{B}}}
+    \newcommand{\pression}{\textrm{P}}
+
+    \newcommand{\phase}{k_x x + k_y y - \omega t}
+    \newcommand{\eip}{\e{i\Phi}}
+    \newcommand{\neip}{\e{-i\Phi}}
+    \newcommand{\tildesur}[1]{\tilde{#1}}
+    \newcommand{\tux}{\tildesur u_x}
+    \newcommand{\tuy}{\tildesur u_y}
+    \newcommand{\tuz}{\tildesur u_z}
+    \newcommand{\tui}{\tildesur u_i}
+    \newcommand{\trho}{\tildesur \rho}
+    \newcommand{\tp}{\tildesur \pression}
+
+    \newcommand{\ui}{u_i}
+    \newcommand{\uic}{u_{i0}}
+    \newcommand{\uip}{u_{i1}}
+    \newcommand{\ux}[1]{u_{x#1}}
+    \newcommand{\uxc}{\ux{0}}
+    \newcommand{\uxp}{\ux{1}}
+    \newcommand{\uy}[1]{u_{y#1}}
+    \newcommand{\uyc}{\uy{0}}
+    \newcommand{\uyp}{\uy{1}}
+    \newcommand{\uz}[1]{u_{z#1}}
+    \newcommand{\uzc}{\uz{0}}
+    \newcommand{\uzp}{\uz{1}}
+    \newcommand{\pc}{\pression_0}
+    \newcommand{\pp}{\pression_1}
+
+    \newcommand{\vectnabla}{\boldnabla}
+    %\newcommand{\laplacien}[1]{\vectnabla^2 #1}           % Laplacien
+    \newcommand{\laplacien}[1]{\boldsymbol{\Delta} #1}           % Laplacien
+    \newcommand{\laplacient}[1]{\vect{\boldnabla}_{\bot}^{2} #1} % Laplacien transverse
+    \newcommand{\gradient}[1]{\vectnabla #1}              % Gradient
+    \newcommand{\divergence}[1]{\vectnabla \cdot #1}      % Divergence
+    \newcommand{\rotationnel}[1]{\vectnabla \times #1}    % Rotationnel
+
+    \newcommand{\tr}[1]{\textrm{tr(#1)}}
+
+    \newcommand{\del}{\partial}                             % del
+    \newcommand{\delx}[1]{\frac{\del #1}{\del x}}           % del ? / delx
+    \newcommand{\dely}[1]{\frac{\del #1}{\del y}}           % del ? / dely
+    \newcommand{\delz}[1]{\frac{\del #1}{\del z}}           % del ? / delz
+    \newcommand{\delt}[1]{\frac{\del #1}{\del t}}           % del ? / delt
+    \newcommand{\deltet}[1]{\frac{\del #1}{\del t^*}}       % del ? / delt*
+    \newcommand{\deli}[2]{\frac{\del #1}{\del #2}}          % del ? / del?
+
+    \newcommand{\delxs}[1]{\frac{\del^2 #1}{\del x^2}}      % del^2 ? / delx^2
+    \newcommand{\delys}[1]{\frac{\del^2 #1}{\del y^2}}      % del^2 ? / dely^2
+    \newcommand{\delzs}[1]{\frac{\del^2 #1}{\del z^2}}      % del^2 ? / delz^2
+    \newcommand{\delts}[1]{\frac{\del^2 #1}{\del t^2}}      % del^2 ? / delt^2
+    \newcommand{\delis}[2]{\frac{\del^2 #1}{\del #2^2}}     % del^2 ? / del?^2
+
+    \newcommand{\dx}[1]{\frac{\textrm{d} #1}{\textrm{dx}}} % d ? / dx
+    \newcommand{\dy}[1]{\frac{\textrm{d} #1}{\textrm{dy}}} % d ? / dy
+    \newcommand{\dz}[1]{\frac{\textrm{d} #1}{\textrm{dz}}} % d ? / dz
+    \newcommand{\dt}[1]{\frac{\textrm{d} #1}{\textrm{dt}}} % d ? / dt
+    \newcommand{\di}[2]{\frac{\textrm{d} #1}{\textrm{d#2}}} % d ? / d?
+
+    \newcommand{\dxs}[1]{\frac{\textrm{d}^2 #1}{\textrm{d}x^2}}  % d^2 ? / dx^2
+    \newcommand{\dys}[1]{\frac{\textrm{d}^2 #1}{\textrm{d}y^2}}  % d^2 ? / dy^2
+    \newcommand{\dzs}[1]{\frac{\textrm{d}^2 #1}{\textrm{d}z^2}}  % d^2 ? / dz^2
+    \newcommand{\dts}[1]{\frac{\textrm{d}^2 #1}{\textrm{d}t^2}}  % d^2 ? / dt^2
+    \newcommand{\dis}[2]{\frac{\textrm{d}^2 #1}{\textrm{d}#2^2}} % d^2 ? / d?^2
+
+    \newcommand{\ex}[1]{\exp{ \left\{ #1 \right\}}}         % exp{?}
+    \newcommand{\ep}[1]{\textrm{e}^{\left( #1 \right) }}    % e^(?)
+    \newcommand{\e}[1]{\textrm{e}^{#1}}                     % e^?
+    \renewcommand{\ln}[1]{\textrm{ln} \left( #1 \right)}    % ln(?)
+    \renewcommand{\log}[1]{\textrm{log} \left( #1 \right)}  % log(?)
+    \newcommand{\cosinus}[1]{\cos \left( #1 \right)}        % cos()
+    \newcommand{\sinus}[1]{\sin \left( #1 \right)}          % sin()
+    \newcommand{\coss}[1]{\cos^2 \left( #1 \right)}         % cos^2()
+    \newcommand{\sins}[1]{\sin^2 \left( #1 \right)}         % sin^2()
+    \newcommand{\acos}[1]{\textrm{acos} \left( #1 \right)}  % acos()
+    \newcommand{\dix}[1]{\times 10^{#1}}                    % ? x 10^?
+
+    \newcommand{\lp}{\left(}                                % (
+    \newcommand{\rp}{\right)}                               % )
+    \newcommand{\lb}{\left[}                                % [
+    \newcommand{\rb}{\right]}                               % ]
+    \newcommand{\lbr}{\left\{}                              % {
+    \newcommand{\rbr}{\right\}}                             % }
+    \newcommand{\equivaut}{\Leftrightarrow}                 % <=>
+
+    % nombres adimensionnels
+    \newcommand{\Reynolds}{\frac{\rho U L}{\mu}}
+    \newcommand{\Reynoldsnu}{\frac{U L}{\nu}}
+
+\fi
+
+\if@tensoriel
+    % declaration spécifiques pour le calcul tensoriel
+
+    \newcommand{\Tctr}{\boldsymbol{\sigma}}
+    \newcommand{\Tctrdev}{\Tctr^d}
+    \newcommand{\Tctrij}{\sigma_{ij}}
+    \newcommand{\Tctrkk}{\sigma_{kk}}
+    \newcommand{\Tctrijdev}{\Tctrij^d}
+    \newcommand{\Tctrmoy}{\bar \sigma}
+    \newcommand{\Tctrmoyij}{{\bar \sigma}_{ij}}
+
+    \newcommand{\Tdef}{\boldsymbol{\epsilon}}
+    \newcommand{\Tdefdev}{\Tdef^d}
+    \newcommand{\Tdefij}{\epsilon_{ij}}
+    \newcommand{\Tdefijdev}{\Tdefij^d}
+    \newcommand{\Tdefexpansion}{\frac{1}{2} \left ( \deli{u_i}{x_j} + \deli{u_j}{x_i} \right )}
+    \newcommand{\Tdefmoy}{\bar \epsilon}
+
+    \newcommand{\Ttxdef}{\boldsymbol{\dot{\epsilon}}}
+    \newcommand{\Ttxdefdev}{\Ttxdef^d}
+    \newcommand{\Ttxdefij}{\dot{\epsilon}_{ij}}
+    \newcommand{\Ttxdefkk}{\dot{\epsilon}_{kk}}
+    \newcommand{\Ttxdefijdev}{\Ttxdefij^d}
+    \newcommand{\Ttxdefexpansion}{\frac{1}{2} \left ( \deli{v_i}{x_j} + \deli{v_j}{x_i} \right )}
+    \newcommand{\Ttxdefmoy}{\bar{\dot \epsilon}}
+
+    \newcommand{\kro}{\delta_{ij}}
+
+    \newcommand{\viscbulkexpansion}{\left ( \lambda + \frac{2}{3} \visc \right )}
+\fi
+
+
+\if@matlab
+    \RequirePackage[framed, numbered]{mcode}
+    % penser à utiliser laprint ou fig2tex (plus récent) dans matlab pour produire de belles figures
+
+    % declaration spécifiques pour matlab
+\fi
+
+\if@chimie
+    \RequirePackage[version=3]{mhchem}
+
+    % declaration spécifiques pour la chimie
+\fi
+
+\if@natbib
+    \RequirePackage[authoryear,sort]{natbib}
+    \RequirePackage{natbibspacing}
+
+    % déclaration spécifiques pour natbib
+\fi
+
+\if@beamer
+    % options :
+    % - beamer
+    % - logo (=nomfichier, upmc par défaut ; fichiers dans ~/texmf/tex/latex/beamer/img)
+
+    \setbeamertemplate{background canvas}{\includegraphics[width=\paperwidth,height=\paperheight]{/home/jd/texmf/tex/latex/img/bg-blue.jpg}}
+    \setbeamercolor{postit}{bg=softyellow,fg=softblack}
+
+    % un encadré utile
+    \def\pifpaf#1
+    {
+      \begin{center}
+      \begin{beamercolorbox}[sep=0em, rounded=true, center]{postit}
+      #1
+      \end{beamercolorbox}
+      \end{center}
+    }
+
+    %\AtBeginSection[]
+    %{
+       %\begin{frame}
+       %\tableofcontents[currentsection]
+       %\end{frame}
+    %}
+
+    % background
+    
+    % structure
+    \setbeamercolor{normal text}{fg=white!80!black}
+    \setbeamercolor{structure}{fg=cyan!50!white}
+    \setbeamertemplate{items}[circle]
+    \setbeamertemplate{blocks}[rounded][shadow=true]
+    
+    % sommaire
+    \setbeamercolor{section in toc}{fg=cyan}
+    \setbeamercolor{subsection in toc}{fg=cyan!40}
+    \setbeamercolor{subsubsection in toc}{fg=cyan!20}
+    \setbeamercolor{subsubsubsection in toc}{fg=white}
+    \setbeamertemplate{section in toc}
+    {\inserttocsectionnumber. ~ \inserttocsection \\}
+    \setbeamertemplate{subsection in toc}
+    {\hspace{0.5cm} \inserttocsubsectionnumber. ~ \inserttocsubsection \\}
+    \setbeamertemplate{subsubsection in toc}
+    {\hspace{1cm} \inserttocsubsubsectionnumber. ~ \inserttocsubsubsection \\}
+
+    % titre
+    \setbeamercolor{title}{fg=softyellow}
+    \setbeamercolor{subtitle}{fg=cyan}
+
+    % navigation bar
+    \setbeamertemplate{navigation symbols}{}
+    %\setbeamercolor{navigation symbols dimmed}{fg=softblack!80!black}
+    %\setbeamercolor{navigation symbols}{fg=softblack!60!black}
+
+    % header
+    \setbeamertemplate{section in head/foot shaded}[default][15]
+    \defbeamertemplate*{headline}{}{%
+    \begin{beamercolorbox}{}
+        %\leavevmode
+        %\vskip0pt plus 1filll
+        \rule{0em}{2em}
+        %{\color{bleupages} \hrule}
+        \hspace{1em}
+        %\raisebox{-1.5em}{%
+        {\color{softyellow} \insertsection}~>~{\color{white} \insertsubsectionhead}
+        %}
+        \hfill
+        \raisebox{-0.3\height}{%
+        \includegraphics[height=2em]{\mylogo}
+        }
+        \hspace{0.3em}
+    \end{beamercolorbox}%
+    \vspace{0.6em}
+    {\color{bleupages} \hrule}
+    }
+    
+    % footer
+    \defbeamertemplate*{footline}{}{%
+        \begin{beamercolorbox}[ht=1.2em, dp=0.6em, leftskip=0.5em,rightskip=0.1em]{author in head/foot}%
+            {\Tiny \leavevmode{\textcolor{bleupages}{\insertshortauthor}}}%
+            \hfill%
+            %numérotation
+            {\Gros \textcolor{bleupages}{\insertframenumber}}
+            \hspace{-1.5em}
+            {\Tiny \textcolor{white}{\raisebox{-0.2em}{\inserttotalframenumber}}}
+            \hspace{0.4em}
+        \end{beamercolorbox}%
+    }
+\fi
+
+% Fin du package
+\endinput
+
