@@ -2,6 +2,8 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+# {{{ General setup
+
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
@@ -59,7 +61,9 @@ xterm*|rxvt*)
     ;;
 esac
 
-# Alias definitions.
+# General setup }}}
+
+# {{{ Alias definitions
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
@@ -80,8 +84,7 @@ if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# alias
-
+# utils
 alias ll='ls -l'
 alias la='ls -A'
 alias lla='ls -al'
@@ -89,7 +92,7 @@ alias l='ls -CF'
 alias rm='rm -i'
 alias cp='cp -i'
 
-# système
+# system
 alias psa='ps aux | grep'
 alias sk='sudo killall'
 alias sk9='sudo kill -9'
@@ -160,6 +163,19 @@ alias  pdflatex='pdflatex --shell-escape'
 #export TEXHOME=".:~//:"
 export TEXINPUTS=".:~/texmf//:"
 
+# ruby switch
+alias ruby-switch-1.8='sudo ln -fs /usr/bin/ruby1.8                           /usr/bin/ruby &&
+                       sudo ln -fs /usr/bin/irb1.8                            /usr/bin/irb  &&
+                       sudo ln -fs /usr/bin/gem1.8                            /usr/bin/gem  &&
+                       sudo ln -fs /var/lib/gems/1.8/gems/rake-0.8.7/bin/rake /usr/bin/rake'
+
+alias ruby-switch-1.9='sudo ln -fs /opt/ruby1.9/bin/ruby1.9.1 /usr/bin/ruby &&
+                       sudo ln -fs /opt/ruby1.9/bin/irb1.9.1  /usr/bin/irb  &&
+                       sudo ln -fs /usr/local/bin/gem1.9.1    /usr/bin/gem  &&
+                       sudo ln -fs /opt/ruby1.9/bin/rake      /usr/bin/rake'
+
+# Alias }}}
+
 # Export {{{
 
 #export RUBYOPT=rubygems
@@ -180,6 +196,8 @@ export GPGKEY=692C50E8
 
 # }}}
 
+# {{{ Notification
+
 # http://doc.ubuntu-fr.org/laptop_mode
 echo 'Penser à contrôler le Load_Cycle_Count (74074 et des poussières le 19/05/2008)'
 #echo 'sudo hdparm -B 254 /dev/sda le 15/05/2008'
@@ -190,3 +208,4 @@ PS1='\n\e[1;34m\u@\h \e[1;35m[\w]\e[0;37m\n$ \e[0m'
 
 #sudo sh /usr/bin/fortune_bashfr.sh
 
+# Notification }}}

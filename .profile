@@ -20,14 +20,3 @@ if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
-# ruby switch
-alias ruby-switch-1.8='sudo ln -fs /usr/bin/ruby1.8                           /usr/bin/ruby &&
-                       sudo ln -fs /usr/bin/irb1.8                            /usr/bin/irb  &&
-                       sudo ln -fs /usr/bin/gem1.8                            /usr/bin/gem  &&
-                       sudo ln -fs /var/lib/gems/1.8/gems/rake-0.8.7/bin/rake /usr/bin/rake'
-
-alias ruby-switch-1.9='sudo ln -fs /opt/ruby1.9/bin/ruby1.9.1 /usr/bin/ruby &&
-                       sudo ln -fs /opt/ruby1.9/bin/irb1.9.1  /usr/bin/irb  &&
-                       sudo ln -fs /usr/local/bin/gem1.9.1    /usr/bin/gem  &&
-                       sudo ln -fs /opt/ruby1.9/bin/rake      /usr/bin/rake'
-

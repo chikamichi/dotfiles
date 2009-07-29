@@ -594,10 +594,8 @@ map <leader>t :FuzzyFinderTextMate<CR>
 
 " {{{ Commandes automatiques
 if has("autocmd")
-
     augroup augroup_autocmd
     au!
-
         filetype plugin on
 
         " se placer à la position du curseur lors de la fermeture du fichier
@@ -623,8 +621,15 @@ if has("autocmd")
         " tabulation stricte dans les Makefile
         autocmd FileType make     set noexpandtab
     augroup END
-
 endif
+
+" always cd to the current file/buffer directory
+"if exists('+autochdir')
+  "set autochdir
+"else
+  "autocmd BufEnter * silent! lcd %:p:h:gs/ /\\ /
+"endif
+
 " Commandes automatiques }}}
 
 " {{{ LaTeX avec le plugin latex-suite
