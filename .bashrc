@@ -46,7 +46,9 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    #PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    # a two-lines prompt
+    PS1="\[\n\e[35;1m\]\u@\h \[\e[37;1m\][\w]\[\e[34;1m\]\n\$ \[\e[0m\]"
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
@@ -203,8 +205,6 @@ echo 'Penser à contrôler le Load_Cycle_Count (74074 et des poussières le 19/0
 #echo 'sudo hdparm -B 254 /dev/sda le 15/05/2008'
 #echo 'Le Load_Cycle_Count ne doit plus (trop) bouger'
 echo "sudo smartctl -a `mount | grep '/ ' | cut -d' ' -f1 | sed -e 's#[0-9]##'` | egrep 'Cycle|Power'"
-
-PS1='\n\e[1;34m\u@\h \e[1;35m[\w]\e[0;37m\n$ \e[0m'
 
 #sudo sh /usr/bin/fortune_bashfr.sh
 
