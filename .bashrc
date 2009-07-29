@@ -46,9 +46,7 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-    #PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-    # a two-lines prompt
-    PS1="\[\n\e[35;1m\]\u@\h \[\e[37;1m\][\w]\[\e[34;1m\]\n\$ \[\e[0m\]"
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
@@ -209,3 +207,7 @@ echo "sudo smartctl -a `mount | grep '/ ' | cut -d' ' -f1 | sed -e 's#[0-9]##'` 
 #sudo sh /usr/bin/fortune_bashfr.sh
 
 # Notification }}}
+
+# a two-lines prompt
+PS1="\n\[\e[35;1m\]\u@\h \[\e[37;1m\][\w]\[\e[34;1m\]\n\$ \[\e[0m\]"
+
