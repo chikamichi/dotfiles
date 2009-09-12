@@ -20,6 +20,12 @@ set fileencoding=utf-8
 " auto +x
 "au BufWritePost *.{sh,pl} silent exe "!chmod +x %"
 
+" When editing a file, always jump to the last cursor position
+autocmd BufReadPost *
+\  if line("'\"") > 0 && line("'\"") <= line("$") |
+\    exe "normal g`\"" |
+\  endif
+
 " formats de fichiers pour lesquels l'autocomplétion est désactivée
 set wildignore=.svn,CVS,.git,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif
 
@@ -862,6 +868,8 @@ vmap <silent> <Leader>m <Plug>SearchPositionCword
 " snipMate }}}
 
 " {{{ Rainbow
+" http://code.google.com/p/vim-scripts/wiki/RainbowParenthsisBundle
+
 let g:rainbow = 1
 let g:rainbow_paren = 1
 let g:rainbow_brace = 1
@@ -870,6 +878,7 @@ let g:rainbow_brace = 1
 " using BufWinEnter because that is run after modelines are run (so it catches
 " modelines which update highlighting)
 autocmd BufWinEnter * runtime plugin/rainbow_paren.vim
+
 " Rainbow }}}
 
 " Plugins }}}
@@ -941,12 +950,6 @@ command! -nargs=0 UnsetSession :let g:SessionFileName = ""
 " ouverture à la volée d'une session dont on connaît le nom
 command! -nargs=1 OpenSession  :exe "source" . g:PathToSessions . <args> . ".vim"
 " ces commandes peuvent être mappées…
-
-" When editing a file, always jump to the last cursor position {{{
-autocmd BufReadPost *
-\  if line("'\"") > 0 && line("'\"") <= line("$") |
-\    exe "normal g`\"" |
-\  endif
 
 " Sessions }}}
 
