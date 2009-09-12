@@ -171,16 +171,15 @@ vnoremap <F10> <C-o>:call <SID>spell()<CR>
 " Génériques }}}
 
 " {{{ Indentation
+" à lire avant toute copier/coller stupide : http://vim.wikia.com/wiki/Indenting_source_code
+" compte tenu du 'filetype plugin indent on' précédent, pas de smartindent !
 
-" indentation automatique
+" indentation automatique en l'absence de réglages pour le filetype courant
 set autoindent
 
-" braces affect autoindentation
-set smartindent
-
 " des espaces à la place du caractère TAB
-" :h tabstop pour les détails
-set tabstop=2
+set tabstop=8
+set softtabstop=2
 set shiftwidth=2
 set expandtab
 
@@ -318,8 +317,8 @@ if has("gui_running")
 endif
 
 " couleurs des numéros de lignes, des folds
-:highlight LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
-highlight Folded ctermbg=black ctermfg=darkgreen guibg=black guifg=green
+hi LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
+hi Folded ctermbg=black ctermfg=darkgreen guibg=black guifg=green
 
 " des couleurs plus sympas pour le pop-up, en accord avec le thème desert
 :highlight Pmenu    guibg=brown   gui=bold
@@ -661,6 +660,9 @@ map <leader>t :FuzzyFinderTextMate<CR>
 
 " {{{ Plugins
 
+" interesting yet not tested:
+" - coding style per project: http://www.vim.org/scripts/script.php?script_id=2633
+
 " {{{ Commandes automatiques
 if has("autocmd")
   augroup augroup_autocmd
@@ -701,7 +703,8 @@ endif
 
 " Commandes automatiques }}}
 
-" {{{ SuperTab
+" {{{ SuperTab continued
+" http://www.vim.org/scripts/script.php?script_id=1643
 
 " allow to trigger completion from within a word
 let g:SuperTabMidWordCompletion = 0
@@ -716,6 +719,7 @@ let g:SuperTabDefaultCompletionType = 'context'
 " SuperTab }}}
 
 " {{{ LaTeX avec le plugin latex-suite
+" http://vim-latex.sourceforge.net/
 
 " IMPORTANT: grep will sometimes skip displaying the file name if you
 " search in a single file. This will confuse Latex-Suite. Set your grep
@@ -827,14 +831,17 @@ endif
 " }}}
 
 " {{{ MATLAB
+" http://www.vim.org/scripts/script.php?script_id=2378
 
-" correcteur avec :make
+" utiliser le correcteur mlint embarqué avec :make
 let g:mlint_path_to_mlint = $HOME . '/bin/mlint'
 autocmd BufEnter *.m compiler mlint
 
 " MATLAB }}}
 
 " {{{ VCS
+" http://www.vim.org/scripts/script.php?script_id=90
+" actually I don't use it ;)
 
 " le mapping par défaut entre en conflit avec le plugin NERDCommenter
 " s comme send (en général, c'est pour du commit ;))
@@ -843,6 +850,8 @@ let VCSCommandMapPrefix='<Leader>s'
 " }}}
 
 " {{{ snipMate
+" http://www.vim.org/scripts/script.php?script_id=2540
+" actually the latest version is on GitHub: http://github.com/msanders/snipmate.vim/tree/master
 
 nmap <silent> <Leader>,n <Plug>SearchPositionOperator
 nmap <silent> <Leader>n <Plug>SearchPositionCurrent
