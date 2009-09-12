@@ -1,21 +1,36 @@
 " {{{ Génériques
 
-" recharger ce fichier s'il a été modifié (et sauvegardé)
-" pour moi, ça n'a jamais vraiment bien fonctionné ^^
+" reload the buffer if edited -- never played well for me
 "autocmd! BufWritePost .vimrc source ~/.vimrc
 
-" mise-à-jour automatique si le fichier en cours d'édition a été modifié ailleurs que dans Vim
+" automatically read in external changes if we haven't modified the buffer
 set autoread
 
-" encodage par défaut
+" automatically flush to disk when using :make, etc.
+set autowrite
+
+" if you :q with changes it asks you if you want to continue or not
+" drived me mad with vim-taglist on
+"set confirm
+
+" default encoding
 set encoding=utf-8
 set fileencoding=utf-8
+
+" auto +x
+"au BufWritePost *.{sh,pl} silent exe "!chmod +x %"
 
 " formats de fichiers pour lesquels l'autocomplétion est désactivée
 set wildignore=.svn,CVS,.git,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif
 
+" add : as a file-name character (allow gf to work with http://foo.bar/)
+set isfname+=:
+
 " accélère le rendu graphique dans les terminaux véloces
 set ttyfast
+
+" faster!
+set timeout timeoutlen=3000 ttimeoutlen=100
 
 " le système d'exploitation décide à la place de Vim le bon moment pour vider le cache
 set nofsync
@@ -53,7 +68,7 @@ set cursorline
 " place le curseur là où il était lors de la fermeture du fichier
 au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g'\"" | endif
 
-" la touche backspace peut supprimer tout et n'importe quoi, dans tous les modes
+" la touche backspace peut supprimer tout et n'importe quoi, *dans tous les modes*
 set backspace=2
 
 " pas de compatiblité avec vi afin d'activer les fonctionnalités de Vim
@@ -105,29 +120,44 @@ map  <C-M-w>         :tabclose<CR>
 " désactivé pour conserver la fonctionnalité d'OmniCompletion
 "autocmd BufEnter * lcd %:p:h
 
-" gestion de la souris en console
+" mouse support in terminals
 if !has("gui_running")
     set mouse=a
 endif
 
-" correction orthographique
-" version Nemolivier
+" don't move the cursor to the start of the line when changing buffers
+set nostartofline
+
+" hide the mouse in the gui while typing
+set mousehide
+
+" {{{ correction orthographique
+
+" French everywhere
 set nospell spelllang=fr
+
 " automatique pour les fichiers .tex
 augroup filetypedetect
 au BufNewFile,BufRead *.tex setlocal spell spelllang=fr
 augroup END
-" F10 active/desactive la correction orthographique
-function! ToggleSpell()
-  if &spell
-     set nospell
-  else
-     set spell
-  end
+
+" painless spell checking (F11)
+function s:spell()
+    if !exists("s:spell_check") || s:spell_check == 0
+        echo "Spell check on"
+        let s:spell_check = 1
+        setlocal spell spelllang=en_us
+    else
+        echo "Spell check off"
+        let s:spell_check = 0
+        setlocal spell spelllang=
+    endif
 endfunction
-noremap <F10> :call ToggleSpell()<cr>
-inoremap <F10> <Esc> :call ToggleSpell()<cr>
-vnoremap <F10> <Esc> :call ToggleSpell()<cr>
+noremap <F10> :call <SID>spell()<CR>
+inoremap <F10> <C-o>:call <SID>spell()<CR>
+vnoremap <F10> <C-o>:call <SID>spell()<CR>
+
+" correction orthographique }}}
 
 " Génériques }}}
 
@@ -136,14 +166,24 @@ vnoremap <F10> <Esc> :call ToggleSpell()<cr>
 " indentation automatique
 set autoindent
 
+" braces affect autoindentation
+set smartindent
+
 " des espaces à la place du caractère TAB
 " :h tabstop pour les détails
 set tabstop=2
 set shiftwidth=2
 set expandtab
 
+" < and > will hit indentation levels instead of always -4/+4
+set shiftround
+
 " some nice options for cindenting, by FOLKE
 set cinoptions={.5s,+.5s,t0,n-2,p2s,(03s,=.5s,>1s,=1s,:1s
+
+" keep the current selection when indenting (thanks cbus)
+vnoremap < <gv
+vnoremap > >gv
 
 " {{{ pour le plugin surround
 " permet de redonner la main à vim pour gérer l'indentation automatique
@@ -268,8 +308,9 @@ if has("gui_running")
         colorscheme zenburn
 endif
 
-" couleurs des numéros de lignes
+" couleurs des numéros de lignes, des folds
 :highlight LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
+highlight Folded ctermbg=black ctermfg=darkgreen guibg=black guifg=green
 
 " des couleurs plus sympas pour le pop-up, en accord avec le thème desert
 :highlight Pmenu    guibg=brown   gui=bold
@@ -309,21 +350,40 @@ set hi=2000
 " afficher la position du curseur
 set ruler
 
+" display more information in the ruler
+set rulerformat=%40(%=%t%h%m%r%w%<\ (%n)\ %4.7l,%-7.(%c%V%)\ %P%)
+
 " toujours afficher le mode courant
 set showmode
 
 " affichage dynamique des commandes
 set showcmd
 
-" utiliser des messages courts
-set shm=a
+" a - terse messages (like [+] instead of [Modified]
+" o - don't show both reading and writing messages if both occur at once
+" t - truncate file names
+" T - truncate messages rather than prompting to press enter
+" W - don't show [w] when writing
+" I - no intro message when starting vim fileless
+set shortmess=aotTWI
 
 " la ligne de status est toujours visible
 set laststatus=2
 
+" display as much of the last line as possible if it's really long
+" also display unprintable characters as hex
+set display+=lastline,uhex
+
 " onglets, fritzophrenic mood
 " http://groups.google.com/group/vim_use/browse_thread/thread/9bbfb7f6ec651438
 set showtabline=2
+
+" highlight matching parens for .2s
+set showmatch
+set matchtime=2
+
+" word wrapping -- don't cut words
+set linebreak
 
 " set up tab labels with tab number, buffer name, number of windows
 function! GuiTabLabel()
@@ -467,6 +527,9 @@ set updatecount=0
 " centre du clavier !
 let   mapleader = ","
 let g:mapleader = ","
+
+" easily cancel hitting the leader key once
+nnoremap <Leader><Leader> <Leader>
 
 " pratique pour ouvrir des fichiers, à défaut d'un auto-cd
 map ,cd :cd %:p:h<CR>
@@ -635,6 +698,20 @@ endif
 
 " Commandes automatiques }}}
 
+" {{{ SuperTab
+
+" allow to trigger completion from within a word
+let g:SuperTabMidWordCompletion = 0
+
+" smart completion (let SuperTab decide how to complete) 
+let g:SuperTabDefaultCompletionType = 'context'
+
+" you may want to change
+" let g:SuperTabMappingTabLiteral = '<c-tab>'
+" to something else so it you can insert tabs within a console/tty!
+
+" SuperTab }}}
+
 " {{{ LaTeX avec le plugin latex-suite
 
 " IMPORTANT: grep will sometimes skip displaying the file name if you
@@ -655,10 +732,28 @@ imap <Alt-B> <Plug>Tex_MathBF
 
 " }}}
 
-" {{{ ctags, OmniCompletion
+" {{{ ctags, vim-taglist, OmniCompletion
 
 " Le plugin vim-taglist est vivement conseillé !
 " http://vim-taglist.sourceforge.net
+"
+" I changed it the following way so it won't bother me with R/W rights:
+"
+" comment this (3920-3927):
+    "if filereadable(sessionfile)
+    "    let ans = input('Do you want to overwrite ' . sessionfile . ' (Y/N)?')
+    "    if ans !=? 'y'
+    "        return
+    "    endif
+    "
+    "    echo "\n"
+    "endif
+"
+" add this instead (uncomment!):
+"
+    "if !filereadable(sessionfile)
+    "  return
+    "endif
 
 " open tags on Vim startup
 let Tlist_Auto_Open = 1
@@ -766,6 +861,17 @@ vmap <silent> <Leader>m <Plug>SearchPositionCword
 
 " snipMate }}}
 
+" {{{ Rainbow
+let g:rainbow = 1
+let g:rainbow_paren = 1
+let g:rainbow_brace = 1
+" just loading this directly from the plugin directory fails because language
+" syntax files override the highlighting
+" using BufWinEnter because that is run after modelines are run (so it catches
+" modelines which update highlighting)
+autocmd BufWinEnter * runtime plugin/rainbow_paren.vim
+" Rainbow }}}
+
 " Plugins }}}
 
 " {{{ Sessions
@@ -835,6 +941,12 @@ command! -nargs=0 UnsetSession :let g:SessionFileName = ""
 " ouverture à la volée d'une session dont on connaît le nom
 command! -nargs=1 OpenSession  :exe "source" . g:PathToSessions . <args> . ".vim"
 " ces commandes peuvent être mappées…
+
+" When editing a file, always jump to the last cursor position {{{
+autocmd BufReadPost *
+\  if line("'\"") > 0 && line("'\"") <= line("$") |
+\    exe "normal g`\"" |
+\  endif
 
 " Sessions }}}
 
