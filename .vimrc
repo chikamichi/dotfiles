@@ -804,11 +804,11 @@ function! VimEnter()
             let sessionfiles = strpart(sessionfiles, index + 1)
         endwhile
         let result      = result . "\n " . fnamemodify(sessionfiles, ":t:r")
-        let result      = result . "\n" . "\n" . "Donnez un nom de session (ou aucun pour démarrer normalement) : "
+        let result      = result . "\n" . "\n" . "Donnez un nom de session (ou aucun pour démarrer avec un nouveau buffer vide) : "
         let sessionname = input(result)
         if sessionname != ""
             exe "source " . g:PathToSessions . sessionname . ".vim"
-            exe "TlistSessionLoad tags4" . sessionname
+            exec "TlistSessionLoad " . g:PathToSessions . sessionname . ".vim.tags"
         endif
     endif
 endfunction
@@ -819,18 +819,22 @@ function! VimLeave()
     if exists("g:SessionFileName") == 1
         if g:SessionFileName != ""
             exe "mksession! " . g:SessionFileName
-            exe "TlistSessionSave tags4" . g:SessionFileName
+            exec "TlistSessionSave " . g:SessionFileName . ".tags"
         endif
+    else
+        exec "TlistSessionSave " . g:PathToSessions . "LastSession.vim.tags"
     endif
 endfunction
 
 " création d'une nouvelle session avec :SetSession "[nom]"
 command! -nargs=1 SetSession   :let g:SessionFileName = g:PathToSessions . <args> . ".vim"
 " suppression des sessions enregistrées avec :UnsetSession "[nom]"
-" pour en supprimer une en particulier, à la main…
+" pour en supprimer une définitivement, il faut le faire à la main dans le
+" dossier des sessions
 command! -nargs=0 UnsetSession :let g:SessionFileName = ""
 " ouverture à la volée d'une session dont on connaît le nom
 command! -nargs=1 OpenSession  :exe "source" . g:PathToSessions . <args> . ".vim"
+" ces commandes peuvent être mappées…
 
 " Sessions }}}
 
