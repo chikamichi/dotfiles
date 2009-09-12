@@ -1,3 +1,6 @@
+" jd AT vauguet DOT org
+" available at http://github.com/chikamichi/config-files/
+
 " {{{ Génériques
 
 " reload the buffer if edited -- never played well for me
@@ -503,25 +506,19 @@ set splitbelow
 
 " {{{ Sauvegarde
 
-" répertoire de sauvegarde automatique
-set backupdir=$HOME/.vim/backup
-
 " activation de la sauvagarde
 set backup
 
-" activation du plugin de gestion de backup numéroté
-"set patchmode=.bak
-
-" conservation de l'historique de 10 sauvegardes
-"let savevers_max=10
-
-" … avec le même répertoire de sauvegarde que pour le backup classique
-"let savevers_dirs = &backupdir
+" répertoire de sauvegarde automatique
+set backupdir=~/.vim/backup
 
 " le swap est mis à jour aprés 50 caractères saisies
 "set updatecount=500
 " suppression de l'utilisation du fichier d'échange
 set updatecount=0
+
+" force save with "W" using sudo
+command W w !sudo tee % > /dev/null
 
 " Sauvegarde }}}
 
@@ -789,70 +786,58 @@ nnoremap <silent> <C-F12> :TlistAddFilesRecursive
 " update the tags for the current buffer
 nnoremap <silent> <F11> :TlistUpdate<cr>
 
+" OmniCompletion
 
-" Je n'utilise plus OmniCompletion, mais je laisse le code à toute fin utile
-"" OmniCompletion
-"" à créer, par exemple, avec : ctags -R -f ~/.vim/systags /usr/include /usr/local/include
-"" sans oublier de lui donner les droits de lecture !
-""
-"" pour créer une base « locale » (fichiers du répertoire courant, par
-"" exemple), dans le cas du C/C++ avec le plugin OmniCppComplete :
-"" ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .
-""
-"" perso, j'utilise :
-"" ctags -R --c++-kinds=+p --fields=+iaS --extra=+q -f ~/.vim/systags /usr/include /usr/local/include
-"" puis je map Ctrl+F12 pour recharger une liste locale (crée un fichier tags
-"" dans le répertoire du fichier en édition)
-"" attention, cela entre en conflit avec l'auto-cd défini plus haut !
+" pour plus d'infos sur les autocmd,
+" http://vim.dindinx.net/traduit/html/autocmd.txt.php
+if has("autocmd")
+  augroup augroup_omni
+    au!
+    " display menu even if there is only one match
+    " (so you can accept or reject it)
+    :set completeopt+=menuone
 
-"" mapping
-"" penser à faire un <leader>cd avant ;)
-"map <C-F12> :!ctags -R *<CR>
-"map <Maj><C-F12> :!ctags -R -f ~/.vim/systags /usr/include /usr/local/include
+    " http://vim.wikia.com/wiki/VimTip1228
+    inoremap <expr> <Esc>      pumvisible() ? "\<C-e>" : "\<Esc>"
+    inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
+    inoremap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
+    inoremap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
+    inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
+    inoremap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
 
-"" tags système
-"set tags+=~/.vim/systags
-"" tags locaux
-"set tags+=tags;
-
-"if has("autocmd")
-"augroup augroup_omni
-"au!
-"autocmd BufRead * echo "File read!"
-"setlocal                        omnifunc=syntaxcomplete#Complete
-"autocmd FileType ada        set omnifunc=adacomplete#Complete
-"autocmd FileType python     set omnifunc=pythoncomplete#Complete
-"autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-"autocmd FileType html       set omnifunc=htmlcomplete#CompleteTags
-"autocmd FileType css        set omnifunc=csscomplete#CompleteCSS
-"autocmd FileType xml        set omnifunc=xmlcomplete#CompleteTags
-"autocmd FileType php        set omnifunc=phpcomplete#CompletePHP
-"autocmd FileType c          set omnifunc=ccomplete#Complete
-"" un peu plus complet pour Ruby et affiliés : http://vim-ruby.rubyforge.org
-"autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
-"autocmd FileType ruby,eruby let g:rubycomplete_buffer_loading = 1
-"autocmd FileType ruby,eruby let g:rubycomplete_rails = 1
-"autocmd FileType ruby,eruby let g:rubycomplete_classes_in_global = 1
-"augroup END
-"endif
+    " binding
+    setlocal                        omnifunc=syntaxcomplete#Complete
+    autocmd FileType ada        set omnifunc=adacomplete#Complete
+    autocmd FileType python     set omnifunc=pythoncomplete#Complete
+    autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+    autocmd FileType html       set omnifunc=htmlcomplete#CompleteTags
+    autocmd FileType css        set omnifunc=csscomplete#CompleteCSS
+    autocmd FileType xml        set omnifunc=xmlcomplete#CompleteTags
+    autocmd FileType php        set omnifunc=phpcomplete#CompletePHP
+    autocmd FileType c          set omnifunc=ccomplete#Complete
+    
+    " un peu plus complet pour Ruby et affiliés : http://vim-ruby.rubyforge.org
+    autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
+    autocmd FileType ruby,eruby let g:rubycomplete_buffer_loading = 1
+    autocmd FileType ruby,eruby let g:rubycomplete_rails = 1
+    autocmd FileType ruby,eruby let g:rubycomplete_classes_in_global = 1
+  augroup END
+endif
 
 " }}}
 
 " {{{ MATLAB
 
-" indentation
-source /usr/share/vim/addons/plugin/matchit.vim
-
 " correcteur avec :make
-let g:mlint_path_to_mlint='/home/jd/bin/mlint'
-autocmd BufEnter *.m    compiler mlint
+let g:mlint_path_to_mlint = $HOME . '/bin/mlint'
+autocmd BufEnter *.m compiler mlint
 
 " MATLAB }}}
 
 " {{{ VCS
 
 " le mapping par défaut entre en conflit avec le plugin NERDCommenter
-" s comme send (en général c'est pour du commit ;))
+" s comme send (en général, c'est pour du commit ;))
 let VCSCommandMapPrefix='<Leader>s'
 
 " }}}
@@ -953,34 +938,38 @@ command! -nargs=1 OpenSession  :exe "source" . g:PathToSessions . <args> . ".vim
 
 " Sessions }}}
 
-"nnoremap gf <C>
+" {{{ Tips
 
 " http://vim.wikia.com/wiki/Display_shell_commands'_output_on_Vim_window
-" Run a shell command and open results in a horizontal split
-command! -complete=file -nargs=+ Split call s:RunShellCommandInSplit(<q-args>)
-function! s:RunShellCommandInSplit(cmdline)
+" say, :Shell ls -la
+command! -complete=shellcmd -nargs=+ Shell call s:RunShellCommand(<q-args>)
+function! s:RunShellCommand(cmdline)
+  echo a:cmdline
+  let expanded_cmdline = a:cmdline
+  for part in split(a:cmdline, ' ')
+     if part[0] =~ '\v[%#<]'
+        let expanded_part = fnameescape(expand(part))
+        let expanded_cmdline = substitute(expanded_cmdline, part, expanded_part, '')
+     endif
+  endfor
   botright new
   setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
-  call setline(1,a:cmdline)
-  call setline(2,substitute(a:cmdline,'.','=','g'))
-  execute 'silent $read !'.escape(a:cmdline,'%#')
+  call setline(1, 'You entered:    ' . a:cmdline)
+  call setline(2, 'Expanded Form:  ' .expanded_cmdline)
+  call setline(3,substitute(getline(2),'.','=','g'))
+  execute '$read !'. expanded_cmdline
   setlocal nomodifiable
   1
 endfunction
 
-" Copy of the above that opens results in a new tab.
-command! -complete=file -nargs=+ Tab call s:RunShellCommandInTab(<q-args>)
-function! s:RunShellCommandInTab(cmdline)
-  tabnew
-  setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
-  call setline(1,a:cmdline)
-  call setline(2,substitute(a:cmdline,'.','=','g'))
-  execute 'silent $read !'.escape(a:cmdline,'%#')
-  setlocal nomodifiable
-  1
-endfunction
-" Issue a find command using regex and open results in a new tab.
-command! -nargs=+ I call s:RunShellCommandInTab('find . -name *'.<q-args>.'*')
+" shortcuts
+" say:
+" :Git add %                (The "%" expands to the current filename)
+" :Svn diff -c 1234
+command! -complete=file -nargs=* Git call s:RunShellCommand('git '.<q-args>)
+command! -complete=file -nargs=* Svn call s:RunShellCommand('svn '.<q-args>)
+
+" Tips }}}
 
 " vim: set foldmethod=marker nonumber:
 
