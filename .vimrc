@@ -25,10 +25,12 @@ set nofsync
 set ch=2
 
 " une ligne de status avec plus d'information !
-" attention au %{VimBuddy()} qui nécessite le plugin VimBuddy
-" et au VCS qui nécessite le plugin vcscommand
+" attention :
+" - au %{VimBuddy()} qui nécessite le plugin VimBuddy
+" - au VCS qui nécessite le plugin vcscommand
+" - au %{Tlist_Get_Tagname_By_Line()} qui nécessite le plugin Vim-taglist
 set laststatus=2
-set statusline=%F\ %{VCSCommandGetStatusLine()}\ %m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [ASCII=\%03.3b]\ [HEX=\%02.2B]\ [POS=%04l,%04v][%p%%]\ [LEN=%L]\ %=\ %{VimBuddy()}
+set statusline=%F\ %{VCSCommandGetStatusLine()}\ %m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [ASCII=\%03.3b]\ [HEX=\%02.2B]\ [POS=%04l,%04v][%p%%]\ [LEN=%L]\ %{Tlist_Get_Tagname_By_Line()}\ %=\ %{VimBuddy()}
 
 " messages plus courts de la part de Vim
 set shortmess=asTI
@@ -470,8 +472,9 @@ let g:mapleader = ","
 map ,cd :cd %:p:h<CR>
 
 " navigation spéciale clavier bépo (dvorak)
-" ie. en mode normal/commande, maintenir espace et utiliser les doigts au
+" ie. en mode normal/commande, maintenir Alt et utiliser les doigts au
 " repos pour des déplacements rapides sans flèches
+" éventuellement à étendre pour les modes insertion, visuel…
 set winaltkeys=no
 nmap <A-t> gj
 nmap <A-s> l
@@ -594,40 +597,40 @@ map <leader>t :FuzzyFinderTextMate<CR>
 
 " {{{ Commandes automatiques
 if has("autocmd")
-    augroup augroup_autocmd
+  augroup augroup_autocmd
     au!
-        filetype plugin on
+    filetype plugin on
 
-        " se placer à la position du curseur lors de la fermeture du fichier
-        autocmd BufReadPost *
-        \ if line("'\"") > 0 && line("'\"") <= line("$") |
-        \   exe "normal g`\"" |
-        \ endif
+    " se placer à la position du curseur lors de la fermeture du fichier
+    autocmd BufReadPost *
+          \ if line("'\"") > 0 && line("'\"") <= line("$") |
+          \   exe "normal g`\"" |
+          \ endif
 
-        " par type de fichier
-        autocmd FileType text        setlocal textwidth=78 nocindent
-        autocmd FileType html        set      formatoptions+=tl
-        " plugin autoclosetag
-        au FileType xhtml,xml so ~/.vim/ftplugin/html_autoclosetag.vim
-        autocmd FileType c,cpp,slang set      cindent
+    " par type de fichier
+    autocmd FileType text        setlocal textwidth=78 nocindent
+    autocmd FileType html        set      formatoptions+=tl
+    " plugin autoclosetag
+    au FileType xhtml,xml so ~/.vim/ftplugin/html_autoclosetag.vim
+    autocmd FileType c,cpp,slang set      cindent
 
-        " par extension, pour les cas tricky
-        autocmd BufNewFile,BufRead *.pc           set ft=proc
-        autocmd BufNewFile,BufRead *.phtm,*.phtml set ft=php
-        au      BufNewFile,BufRead *.asy          setf asy
-        au!     BufRead,BufNewFile *.haml         setfiletype haml 
-        au!     BufRead,BufNewFile *.sass         setfiletype sass 
-        
-        " tabulation stricte dans les Makefile
-        autocmd FileType make     set noexpandtab
-    augroup END
+    " par extension, pour les cas tricky
+    autocmd BufNewFile,BufRead *.pc           set ft=proc
+    autocmd BufNewFile,BufRead *.phtm,*.phtml set ft=php
+    au      BufNewFile,BufRead *.asy          setf asy
+    au!     BufRead,BufNewFile *.haml         setfiletype haml 
+    au!     BufRead,BufNewFile *.sass         setfiletype sass 
+
+    " tabulation stricte dans les Makefile
+    autocmd FileType make     set noexpandtab
+  augroup END
 endif
 
 " always cd to the current file/buffer directory
 "if exists('+autochdir')
-  "set autochdir
+"set autochdir
 "else
-  "autocmd BufEnter * silent! lcd %:p:h:gs/ /\\ /
+"autocmd BufEnter * silent! lcd %:p:h:gs/ /\\ /
 "endif
 
 " Commandes automatiques }}}
@@ -654,7 +657,40 @@ imap <Alt-B> <Plug>Tex_MathBF
 
 " {{{ ctags, OmniCompletion
 
-"" pour OmniCompletion
+" Le plugin vim-taglist est vivement conseillé !
+" http://vim-taglist.sourceforge.net
+
+" open tags on Vim startup
+let Tlist_Auto_Open = 1
+" fetch tags for closed files/buffer in the background
+let Tlist_Process_File_Always = 1
+" close inactive files tags folds
+let Tlist_File_Fold_Auto_Close = 1
+" order tags by name
+let Tlist_Sort_Type = "name"
+" change colors for zenburn integration
+":highlight MyTagListTagName guifg=blue ctermfg=blue
+":highlight MyTagListFileName guifg=blue ctermfg=blue
+" do not alter window size on toggling
+let Tlist_Inc_Winwidth = 0
+" don't care about the folding charts
+let Tlist_Enable_Fold_Column = 0
+
+" toggle tags
+nnoremap <silent> <F12> :TlistToggle<cr>
+" http://vim-taglist.sourceforge.net/manual.html#:TlistAddFilesRecursive
+" takes two arguments!
+" so, hit <C-F12>, hit <space>, type the directory,
+" hit <space> again, type a pattern like *.c (* is default value)
+" and <Enter> to add tags from files within a directory,
+" without actually opening them in numerous buffers
+nnoremap <silent> <C-F12> :TlistAddFilesRecursive
+" update the tags for the current buffer
+nnoremap <silent> <F11> :TlistUpdate<cr>
+
+
+" Je n'utilise plus OmniCompletion, mais je laisse le code à toute fin utile
+"" OmniCompletion
 "" à créer, par exemple, avec : ctags -R -f ~/.vim/systags /usr/include /usr/local/include
 "" sans oublier de lui donner les droits de lecture !
 ""
@@ -679,24 +715,24 @@ imap <Alt-B> <Plug>Tex_MathBF
 "set tags+=tags;
 
 "if has("autocmd")
-    "augroup augroup_omni
-    "au!
-        "autocmd BufRead * echo "File read!"
-        "setlocal                        omnifunc=syntaxcomplete#Complete
-        "autocmd FileType ada        set omnifunc=adacomplete#Complete
-        "autocmd FileType python     set omnifunc=pythoncomplete#Complete
-        "autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-        "autocmd FileType html       set omnifunc=htmlcomplete#CompleteTags
-        "autocmd FileType css        set omnifunc=csscomplete#CompleteCSS
-        "autocmd FileType xml        set omnifunc=xmlcomplete#CompleteTags
-        "autocmd FileType php        set omnifunc=phpcomplete#CompletePHP
-        "autocmd FileType c          set omnifunc=ccomplete#Complete
-        "" un peu plus complet pour Ruby et affiliés : http://vim-ruby.rubyforge.org
-        "autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
-        "autocmd FileType ruby,eruby let g:rubycomplete_buffer_loading = 1
-        "autocmd FileType ruby,eruby let g:rubycomplete_rails = 1
-        "autocmd FileType ruby,eruby let g:rubycomplete_classes_in_global = 1
-    "augroup END
+"augroup augroup_omni
+"au!
+"autocmd BufRead * echo "File read!"
+"setlocal                        omnifunc=syntaxcomplete#Complete
+"autocmd FileType ada        set omnifunc=adacomplete#Complete
+"autocmd FileType python     set omnifunc=pythoncomplete#Complete
+"autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+"autocmd FileType html       set omnifunc=htmlcomplete#CompleteTags
+"autocmd FileType css        set omnifunc=csscomplete#CompleteCSS
+"autocmd FileType xml        set omnifunc=xmlcomplete#CompleteTags
+"autocmd FileType php        set omnifunc=phpcomplete#CompletePHP
+"autocmd FileType c          set omnifunc=ccomplete#Complete
+"" un peu plus complet pour Ruby et affiliés : http://vim-ruby.rubyforge.org
+"autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
+"autocmd FileType ruby,eruby let g:rubycomplete_buffer_loading = 1
+"autocmd FileType ruby,eruby let g:rubycomplete_rails = 1
+"autocmd FileType ruby,eruby let g:rubycomplete_classes_in_global = 1
+"augroup END
 "endif
 
 " }}}
@@ -735,20 +771,23 @@ vmap <silent> <Leader>m <Plug>SearchPositionCword
 " {{{ Sessions
 
 " http://vim.wikia.com/wiki/VimTip450
-" ces fonctions permettent de récupérer un état particulier de Vim.
+" Ces fonctions permettent de récupérer un état particulier de Vim.
 "
-" si on souhaite pouvoir réouvrir tout un ensemble de fichiers, avec leurs
+" Si on souhaite pouvoir réouvrir tout un ensemble de fichiers, avec leurs
 " réglages propres, la répartition en onglets et fenêtres, etc. il suffit de
-" faire :SetSession "truc bidule" avant de quitter Vim (:qa)
+" faire :SetSession "truc bidule" avant de quitter Vim (:qa).
 " > attention aux guillemets autour du nom ! <
-" au prochain lancement, une liste permettra de réouvrir "truc bidule", ou
+" Au prochain lancement, une liste permettra de réouvrir "truc bidule", ou
 " toute autre session enregistrée par ailleurs, ou continuer avec un Vim
-" vierge
+" vierge.
 "
-" il faut créer un répertoire ~/.vim/sessions/ accessible en +rw
+" Il faut créer un répertoire ~/.vim/sessions/ accessible en +rw
 "
-" cette version est très légèrement modifiée, pour rester full-text, en
-" français, avec une commande de chargement à la volée sus
+" cette version est légèrement modifiée :
+" - full-text, même avec la GUI
+" - en français
+" - une commande de chargement à la volée (LastSession)
+" - support du plugin Vim-taglist (à désactiver si vous n'utilisez pas)
 
 au VimLeave * call VimLeave()
 au VimEnter * call VimEnter()
@@ -769,15 +808,18 @@ function! VimEnter()
         let sessionname = input(result)
         if sessionname != ""
             exe "source " . g:PathToSessions . sessionname . ".vim"
+            exe "TlistSessionLoad tags4" . sessionname
         endif
     endif
 endfunction
 
 function! VimLeave()
     exe "mksession! " . g:PathToSessions . "LastSession.vim"
+
     if exists("g:SessionFileName") == 1
         if g:SessionFileName != ""
             exe "mksession! " . g:SessionFileName
+            exe "TlistSessionSave tags4" . g:SessionFileName
         endif
     endif
 endfunction
