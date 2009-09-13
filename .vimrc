@@ -145,12 +145,13 @@ set mousehide
 " French everywhere
 set nospell spelllang=fr
 
-" automatique pour les fichiers .tex
+" automatique pour les fichiers .txt et .tex
 augroup filetypedetect
-au BufNewFile,BufRead *.tex setlocal spell spelllang=fr
+  au BufNewFile,BufRead *.txt setlocal spell spelllang=fr
+  au BufNewFile,BufRead *.tex setlocal spell spelllang=fr
 augroup END
 
-" painless spell checking (F11)
+" painless spell checking (F10)
 function s:spell()
     if !exists("s:spell_check") || s:spell_check == 0
         echo "Spell check on"
@@ -292,9 +293,12 @@ set list
 " {{{ Coloration syntaxique, couleurs, polices
 
 " active la coloration syntaxique quand c'est possible
-if &t_Co > 2 || has("gui_running")
-        syntax on
-endif
+"if &t_Co > 2 || has("gui_running")
+        "syntax on
+"endif
+
+" thème de coloration syntaxique par défaut
+colorscheme zenburn
 
 if has("gui_running")
         " tente de maximiser la fenêtre GVim (problème avec Gnome et Metacity
@@ -306,21 +310,21 @@ if has("gui_running")
                 set guifont=Fixedsys:h9:cANSI
                 "set guifont=Courier:h10:cANSI
         else
-                set guifont=Deja\ Vu\ Sans\ Mono\ 12
+                "set guifont=Deja\ Vu\ Sans\ Mono\ 12
+                " you'll need ttf-droid:
+                set guifont=Droid\ Sans\ Mono\ 14
                 " réglages de l'interface
                 set guioptions+=ace
                 set guioptions-=mT
         endif
-
-        " thème de coloration syntaxique par défaut
-        colorscheme zenburn
 endif
 
-" couleurs des numéros de lignes, des folds
+" couleurs des numéros de lignes, en accord avec zenburn
 hi LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
-hi Folded ctermbg=black ctermfg=darkgreen guibg=black guifg=green
+" couleurs des numéros des folds, en accord avec zenburn
+hi Folded ctermbg=LightGreen ctermfg=white guibg=DarkOliveGreen guifg=ivory
 
-" des couleurs plus sympas pour le pop-up, en accord avec le thème desert
+" couleurs plus sympas pour les pop-up et menus, en accord avec le thème zenburn
 :highlight Pmenu    guibg=brown   gui=bold
 :highlight PmenuSel guibg=DarkRed gui=bold
 
@@ -634,24 +638,6 @@ vmap <Nul> <Nop>
 cmap <Nul> <Nop>
 nmap <Nul> <Nop>
 
-"Use TAB "to complete when typing words, else inserts TABs as usual.
-""Uses dictionary and source files to find matching words to complete.
-
-""See help completion for source,
-""Note: usual completion is on <C-n> but more trouble to press all the time.
-""Never type the same word twice and maybe learn a new spellings!
-""Use the Linux dictionary when spelling is in doubt.
-""Window users can copy the file to their machine.
-"function! Tab_Or_Complete()
-  "if col('.')>1 && strpart( getline('.'), col('.')-2, 3 ) =~ '^\w'
-    "return "\<C-N>"
-  "else
-    "return "\<Tab>"
-  "endif
-"endfunction
-":inoremap <Tab> <C-R>=Tab_Or_Complete()<CR>
-":set dictionary="/usr/share/dict/french"
-
 " FuzzyFinder
 " http://github.com/jamis/fuzzyfinder_textmate/
 map <leader>t :FuzzyFinderTextMate<CR>
@@ -660,7 +646,41 @@ map <leader>t :FuzzyFinderTextMate<CR>
 
 " {{{ Plugins
 
-" interesting yet not tested:
+" my plugins in ~/.vim/plugin/:
+" |-- AlignMapsPlugin.vim
+" |-- AlignPlugin.vim
+" |-- AutoAlign.vim
+" |-- NERD_commenter.vim
+" |-- SearchComplete.vim
+" |-- SearchPosition.vim
+" |-- a.vim
+" |-- bufexplorer.vim
+" |-- cecutil.vim
+" |-- fuzzyfinder.vim
+" |-- fuzzyfinder_textmate.vim
+" |-- imaps.vim
+" |-- libList.vim
+" |-- matchit.vim -> /usr/share/vim/vim72/macros/matchit.vim
+" |-- obviousmode.vim
+" |-- prtdialog.vim
+" |-- rails.vim
+" |-- rainbow_parenthsis.vim
+" |-- remoteOpen.vim
+" |-- scmdiff.vim
+" |-- snipMate.vim
+" |-- supertab.vim
+" |-- surround.vim
+" |-- taglist.vim
+" |-- vcscommand.vim
+" |-- vcscvs.vim
+" |-- vcsgit.vim
+" |-- vcssvk.vim
+" |-- vcssvn.vim
+" |-- vimballPlugin.vim
+" |-- vimbuddy.vim
+" `-- vimwiki.vim
+
+" interesting but not tested yet:
 " - coding style per project: http://www.vim.org/scripts/script.php?script_id=2633
 
 " {{{ Commandes automatiques
