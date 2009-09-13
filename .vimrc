@@ -1,4 +1,4 @@
-" jd AT vauguet DOT org
+" jd AT vauguet DOT fr
 " available at http://github.com/chikamichi/config-files/
 
 " {{{ Génériques
