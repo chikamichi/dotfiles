@@ -620,7 +620,7 @@ cmap <F4> <c-c>:bd!<cr>
 nnoremap <silent> <F8> :Tlist<CR>
 
 if has("gui_running")
-   " Shift-[flèche] pour sélectionner un bloc
+   " Maj-[flèche] pour sélectionner un bloc
     map  <S-Up>    vk
     vmap <S-Up>    k
     map  <S-Down>  vj
@@ -641,6 +641,9 @@ nmap <Nul> <Nop>
 " FuzzyFinder
 " http://github.com/jamis/fuzzyfinder_textmate/
 map <leader>t :FuzzyFinderTextMate<CR>
+
+" A (switch between header/code files)
+map <F2> :A<CR>
 
 " Mapping }}}
 
