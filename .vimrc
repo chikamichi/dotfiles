@@ -320,7 +320,10 @@ set list
 "endif
 
 " thème de coloration syntaxique par défaut
-colorscheme zenburn
+" http://vimcolorschemetest.googlecode.com/svn/html/index-c.html
+"colorscheme zenburn
+"colorscheme blackdust
+colorscheme eclm_wombat
 
 if has("gui_running")
         " tente de maximiser la fenêtre GVim (problème avec Gnome et Metacity
@@ -341,14 +344,14 @@ if has("gui_running")
         endif
 endif
 
-" couleurs des numéros de lignes, en accord avec zenburn
-hi LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
-" couleurs des numéros des folds, en accord avec zenburn
-hi Folded ctermbg=LightGreen ctermfg=white guibg=DarkOliveGreen guifg=ivory
+" couleurs des numéros de lignes
+"hi LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
+" couleurs des folds
+"hi Folded ctermbg=LightGreen ctermfg=white guibg=DarkOliveGreen guifg=ivory
 
-" couleurs plus sympas pour les pop-up et menus, en accord avec le thème zenburn
-:highlight Pmenu    guibg=brown   gui=bold
-:highlight PmenuSel guibg=DarkRed gui=bold
+"" couleurs plus sympas pour les pop-up et menus
+":highlight Pmenu    guibg=brown   gui=bold
+":highlight PmenuSel guibg=DarkRed gui=bold
 
 " how many lines to sync backwards
 syn sync minlines=10000 maxlines=10000
@@ -496,6 +499,11 @@ set guitabtooltip=%!GuiTabToolTip()
 " Statusline, menu, onglets }}}
 
 " {{{ Gestion du fenêtrage
+
+" tabs everywhere!
+" you'll need to edit gvim.desktop:
+" http://vim.wikia.com/wiki/Launch_files_in_new_tabs_under_Unix 
+tab all
 
 if has("gui_running")
     " le focus suit la souris
