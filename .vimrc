@@ -142,8 +142,8 @@ set mousehide
 
 " {{{ correction orthographique
 
-" French everywhere
-set nospell spelllang=fr
+" pas de correction orthographique par défaut
+set nospell
 
 " automatique pour les fichiers .txt et .tex
 augroup filetypedetect
@@ -151,21 +151,43 @@ augroup filetypedetect
   au BufNewFile,BufRead *.tex setlocal spell spelllang=fr
 augroup END
 
-" painless spell checking (F10)
-function s:spell()
+" painless spell checking
+" for French, you'll need
+" wget http://ftp.vim.org/pub/vim/runtime/spell/fr.utf-8.sug
+" wget http://ftp.vim.org/pub/vim/runtime/spell/fr.utf-8.spl
+" which you may move into ~/.vim/spell
+function s:spell_fr()
     if !exists("s:spell_check") || s:spell_check == 0
-        echo "Spell check on"
+        echo "Correction orthographique activée (français)"
         let s:spell_check = 1
-        setlocal spell spelllang=en_us
+        setlocal spell spelllang=fr
     else
-        echo "Spell check off"
+        echo "Correction orthographique désactivée"
         let s:spell_check = 0
         setlocal spell spelllang=
     endif
 endfunction
-noremap <F10> :call <SID>spell()<CR>
-inoremap <F10> <C-o>:call <SID>spell()<CR>
-vnoremap <F10> <C-o>:call <SID>spell()<CR>
+" for English
+function s:spell_en()
+    if !exists("s:spell_check") || s:spell_check == 0
+        echo "Correction orthographique activée (anglais)"
+        let s:spell_check = 1
+        setlocal spell spelllang=en
+    else
+        echo "Correction orthographique désactivée"
+        let s:spell_check = 0
+        setlocal spell spelllang=
+    endif
+endfunction
+
+" mapping français
+noremap  <F10>        :call <SID>spell_fr()<CR>
+inoremap <F10>   <C-o>:call <SID>spell_fr()<CR>
+vnoremap <F10>   <C-o>:call <SID>spell_fr()<CR>
+" mapping English
+noremap  <S-F10>      :call <SID>spell_en()<CR>
+inoremap <S-F10> <C-o>:call <SID>spell_en()<CR>
+vnoremap <S-F10> <C-o>:call <SID>spell_en()<CR>
 
 " correction orthographique }}}
 
@@ -649,7 +671,8 @@ map <F2> :A<CR>
 
 " {{{ Plugins
 
-" Here's a raw list of my plugins, located in ~/.vim/plugin/:
+" Here's a raw list of my plugins, located in ~/.vim/plugin/
+" (http://www.vim.org/scripts/ to find them):
 " |-- AlignMapsPlugin.vim
 " |-- AlignPlugin.vim
 " |-- AutoAlign.vim
@@ -675,8 +698,10 @@ map <F2> :A<CR>
 " |-- remoteOpen.vim
 " |-- scmdiff.vim
 " |-- snipMate.vim
+" http://www.catonmat.net/blog/vim-plugins-snipmate-vim/
 " |-- supertab.vim
-" |-- surround.vim        http://www.catonmat.net/blog/vim-plugins-surround-vim/
+" |-- surround.vim
+" http://www.catonmat.net/blog/vim-plugins-surround-vim/
 " |-- taglist.vim
 " |-- vcscommand.vim
 " |-- vcscvs.vim
