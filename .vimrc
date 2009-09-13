@@ -646,7 +646,7 @@ map <leader>t :FuzzyFinderTextMate<CR>
 
 " {{{ Plugins
 
-" my plugins in ~/.vim/plugin/:
+" Here's a raw list of my plugins, located in ~/.vim/plugin/:
 " |-- AlignMapsPlugin.vim
 " |-- AlignPlugin.vim
 " |-- AutoAlign.vim
@@ -658,18 +658,22 @@ map <leader>t :FuzzyFinderTextMate<CR>
 " |-- cecutil.vim
 " |-- fuzzyfinder.vim
 " |-- fuzzyfinder_textmate.vim
+"     latest forked at: http://github.com/viperinthought/fuzzyfinder_textmate/tree/
 " |-- imaps.vim
 " |-- libList.vim
-" |-- matchit.vim -> /usr/share/vim/vim72/macros/matchit.vim
+" |-- matchit.vim
+"     http://www.catonmat.net/blog/vim-plugins-matchit-vim/
 " |-- obviousmode.vim
 " |-- prtdialog.vim
 " |-- rails.vim
 " |-- rainbow_parenthsis.vim
+" |-- repeat.vim
+"     http://www.catonmat.net/blog/vim-plugins-repeat-vim/
 " |-- remoteOpen.vim
 " |-- scmdiff.vim
 " |-- snipMate.vim
 " |-- supertab.vim
-" |-- surround.vim
+" |-- surround.vim        http://www.catonmat.net/blog/vim-plugins-surround-vim/
 " |-- taglist.vim
 " |-- vcscommand.vim
 " |-- vcscvs.vim
@@ -680,8 +684,8 @@ map <leader>t :FuzzyFinderTextMate<CR>
 " |-- vimbuddy.vim
 " `-- vimwiki.vim
 
-" interesting but not tested yet:
-" - coding style per project: http://www.vim.org/scripts/script.php?script_id=2633
+" interesting ones but not tested yet:
+" - coding styles per project: http://www.vim.org/scripts/script.php?script_id=2633
 
 " {{{ Commandes automatiques
 if has("autocmd")
