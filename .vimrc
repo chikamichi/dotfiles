@@ -324,7 +324,7 @@ set list
 " http://vimcolorschemetest.googlecode.com/svn/html/index-c.html
 "colorscheme zenburn
 "colorscheme blackdust
-colorscheme eclm_wombat
+colorscheme eclm_wombat " un peu modifié, en réalité :)
 
 if has("gui_running")
   " tente de maximiser la fenêtre GVim (problème avec Gnome et Metacity
