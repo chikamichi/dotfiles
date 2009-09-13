@@ -25,9 +25,9 @@ set fileencoding=utf-8
 
 " When editing a file, always jump to the last cursor position
 autocmd BufReadPost *
-\  if line("'\"") > 0 && line("'\"") <= line("$") |
-\    exe "normal g`\"" |
-\  endif
+      \  if line("'\"") > 0 && line("'\"") <= line("$") |
+      \    exe "normal g`\"" |
+      \  endif
 
 " formats de fichiers pour lesquels l'autocomplétion est désactivée
 set wildignore=.svn,CVS,.git,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif
@@ -102,7 +102,7 @@ set com^=sr:*\ -,mb:*\ \ ,el:*/ com^=sr://\ -,mb://\ \ ,el:///
 
 " ajoute une marge à gauche pour afficher les +/- des replis (folds)
 if has("gui_running")
-    set foldcolumn=2
+  set foldcolumn=2
 endif
 
 " autorise le folding
@@ -131,7 +131,7 @@ map  <C-M-w>         :tabclose<CR>
 
 " mouse support in terminals
 if !has("gui_running")
-    set mouse=a
+  set mouse=a
 endif
 
 " don't move the cursor to the start of the line when changing buffers
@@ -157,27 +157,27 @@ augroup END
 " wget http://ftp.vim.org/pub/vim/runtime/spell/fr.utf-8.spl
 " which you may move into ~/.vim/spell
 function s:spell_fr()
-    if !exists("s:spell_check") || s:spell_check == 0
-        echo "Correction orthographique activée (français)"
-        let s:spell_check = 1
-        setlocal spell spelllang=fr
-    else
-        echo "Correction orthographique désactivée"
-        let s:spell_check = 0
-        setlocal spell spelllang=
-    endif
+  if !exists("s:spell_check") || s:spell_check == 0
+    echo "Correction orthographique activée (français)"
+    let s:spell_check = 1
+    setlocal spell spelllang=fr
+  else
+    echo "Correction orthographique désactivée"
+    let s:spell_check = 0
+    setlocal spell spelllang=
+  endif
 endfunction
 " for English
 function s:spell_en()
-    if !exists("s:spell_check") || s:spell_check == 0
-        echo "Correction orthographique activée (anglais)"
-        let s:spell_check = 1
-        setlocal spell spelllang=en
-    else
-        echo "Correction orthographique désactivée"
-        let s:spell_check = 0
-        setlocal spell spelllang=
-    endif
+  if !exists("s:spell_check") || s:spell_check == 0
+    echo "Correction orthographique activée (anglais)"
+    let s:spell_check = 1
+    setlocal spell spelllang=en
+  else
+    echo "Correction orthographique désactivée"
+    let s:spell_check = 0
+    setlocal spell spelllang=
+  endif
 endfunction
 
 " mapping français
@@ -256,48 +256,49 @@ set incsearch
 vmap <tab> >gv
 vmap <bs> <gv
 
+" utiliser <tab> pour aligner et désindenter intelligemment du code…
 " auto-complete avec <tab>
 function! TabAlign()
-    " Cette fonction, lorsqu'aucun mot n'est tapé, cherche à recopier le dernier caractère de la ligne d'avant
-    " Idéal pour aligner des backslash avant des retour à la ligne
-    let col  = col('.')
-    let lnum = line('.')
-    " recherche de la première ligne ayant une longueur supérieure à la ligne courante
-    while lnum > 1 " chercher la ligne 
-        let lnum = lnum - 1
-        let ln = strpart(getline(lnum), col-1)
-        let ms = matchstr(ln, '[^ ]*  *[^ ]')
-        if ms != ""
-            break
-        endif
-    endwhile
-
-    if lnum == 1
-        return "\<Tab>"
-    else
-        " Copie dans le registre z du dernier caractère de la ligne de longueur supérieure trouvée
-        let @z = substitute(strpart(ms, 0, strlen(ms)-1), '.', ' ', 'g')
-        " Si au dernier caractère de la ligne :
-        if col > strlen(getline('.'))
-            " Copie du registre z après le caractère courant (CTRL-O échappe du mode insertion pour une instruction)
-            return "\<C-O>\"zp"
-        else
-            " Copie du registre z avant le caractère courant (idem)
-            return "\<C-O>\"zP"
-        endif
+  " Cette fonction, lorsqu'aucun mot n'est tapé, cherche à recopier le dernier caractère de la ligne d'avant
+  " Idéal pour aligner des backslash avant des retour à la ligne
+  let col  = col('.')
+  let lnum = line('.')
+  " recherche de la première ligne ayant une longueur supérieure à la ligne courante
+  while lnum > 1 " chercher la ligne 
+    let lnum = lnum - 1
+    let ln = strpart(getline(lnum), col-1)
+    let ms = matchstr(ln, '[^ ]*  *[^ ]')
+    if ms != ""
+      break
     endif
+  endwhile
+
+  if lnum == 1
+    return "\<Tab>"
+  else
+    " Copie dans le registre z du dernier caractère de la ligne de longueur supérieure trouvée
+    let @z = substitute(strpart(ms, 0, strlen(ms)-1), '.', ' ', 'g')
+    " Si au dernier caractère de la ligne :
+    if col > strlen(getline('.'))
+      " Copie du registre z après le caractère courant (CTRL-O échappe du mode insertion pour une instruction)
+      return "\<C-O>\"zp"
+    else
+      " Copie du registre z avant le caractère courant (idem)
+      return "\<C-O>\"zP"
+    endif
+  endif
 endfunction
 
 function! CleverTab()
-    let c = strpart(getline('.'), col('.')-2, 1)
-    " Si aucun mot n'a été partiellement saisi
-    if c == ' ' || c == '\t' || c == ''
-        " Utiliser la fonction précédente
-        return TabAlign()
-    else
-        " Complétion automatique
-        return "\<C-P>"
-    endif
+  let c = strpart(getline('.'), col('.')-2, 1)
+  " Si aucun mot n'a été partiellement saisi
+  if c == ' ' || c == '\t' || c == ''
+    " Utiliser la fonction précédente
+    return TabAlign()
+  else
+    " Complétion automatique
+    return "\<C-P>"
+  endif
 endfunction
 
 inoremap <Tab> <C-R>=CleverTab()<CR>
@@ -316,7 +317,7 @@ set list
 
 " active la coloration syntaxique quand c'est possible
 "if &t_Co > 2 || has("gui_running")
-        "syntax on
+"syntax on
 "endif
 
 " thème de coloration syntaxique par défaut
@@ -326,22 +327,22 @@ set list
 colorscheme eclm_wombat
 
 if has("gui_running")
-        " tente de maximiser la fenêtre GVim (problème avec Gnome et Metacity
-        " non solvable par la configuration de Vim seule)
-        set lines=99999 columns=99999
+  " tente de maximiser la fenêtre GVim (problème avec Gnome et Metacity
+  " non solvable par la configuration de Vim seule)
+  set lines=99999 columns=99999
 
-        " police par défaut
-        if has("win32")
-                set guifont=Fixedsys:h9:cANSI
-                "set guifont=Courier:h10:cANSI
-        else
-                "set guifont=Deja\ Vu\ Sans\ Mono\ 12
-                " you'll need ttf-droid:
-                set guifont=Droid\ Sans\ Mono\ 14
-                " réglages de l'interface
-                set guioptions+=ace
-                set guioptions-=mT
-        endif
+  " police par défaut
+  if has("win32")
+    set guifont=Fixedsys:h9:cANSI
+    "set guifont=Courier:h10:cANSI
+  else
+    "set guifont=Deja\ Vu\ Sans\ Mono\ 12
+    " you'll need ttf-droid:
+    set guifont=Droid\ Sans\ Mono\ 14
+    " réglages de l'interface
+    set guioptions+=ace
+    set guioptions-=mT
+  endif
 endif
 
 " couleurs des numéros de lignes
@@ -424,73 +425,73 @@ set linebreak
 
 " set up tab labels with tab number, buffer name, number of windows
 function! GuiTabLabel()
-    let label = ''
-    let bufnrlist = tabpagebuflist(v:lnum)
+  let label = ''
+  let bufnrlist = tabpagebuflist(v:lnum)
 
-    " Add '+' if one of the buffers in the tab page is modified
-    for bufnr in bufnrlist
+  " Add '+' if one of the buffers in the tab page is modified
+  for bufnr in bufnrlist
     if getbufvar(bufnr, "&modified")
-        let label = '+'
-        break
+      let label = '+'
+      break
     endif
-    endfor
+  endfor
 
-    " Append the tab number
-    let label .= tabpagenr().': '
+  " Append the tab number
+  let label .= tabpagenr().': '
 
-    " Append the buffer name
-    let name = bufname(bufnrlist[tabpagewinnr(v:lnum) - 1])
-    if name == ''
-        " give a name to no-name documents
-        if &buftype=='quickfix'
-            let name = '[Quickfix List]'
-        else
-            let name = '[Non enregistré]'
-        endif
+  " Append the buffer name
+  let name = bufname(bufnrlist[tabpagewinnr(v:lnum) - 1])
+  if name == ''
+    " give a name to no-name documents
+    if &buftype=='quickfix'
+      let name = '[Quickfix List]'
     else
-        " get only the file name
-        let name = fnamemodify(name,":t")
+      let name = '[Non enregistré]'
     endif
-    let label .= name
+  else
+    " get only the file name
+    let name = fnamemodify(name,":t")
+  endif
+  let label .= name
 
-    " Append the number of windows in the tab page
-    let wincount = tabpagewinnr(v:lnum, '$')
-    return label . '  [' . wincount . ']'
+  " Append the number of windows in the tab page
+  let wincount = tabpagewinnr(v:lnum, '$')
+  return label . '  [' . wincount . ']'
 endfunction
 
 " set up tab tooltips with every buffer name
 function! GuiTabToolTip()
-    let tip = ''
-    let bufnrlist = tabpagebuflist(v:lnum)
+  let tip = ''
+  let bufnrlist = tabpagebuflist(v:lnum)
 
-    for bufnr in bufnrlist
-        " separate buffer entries
-        if tip!=''
-            let tip .= ' | '
-        endif
+  for bufnr in bufnrlist
+    " separate buffer entries
+    if tip!=''
+      let tip .= ' | '
+    endif
 
-        " Add name of buffer
-        let name=bufname(bufnr)
-        if name == ''
-            " give a name to no name documents
-            if getbufvar(bufnr,'&buftype')=='quickfix'
-                let name = '[Quickfix List]'
-            else
-                let name = '[Non enregistré]'
-            endif
-        endif
-        let tip.=name
+    " Add name of buffer
+    let name=bufname(bufnr)
+    if name == ''
+      " give a name to no name documents
+      if getbufvar(bufnr,'&buftype')=='quickfix'
+        let name = '[Quickfix List]'
+      else
+        let name = '[Non enregistré]'
+      endif
+    endif
+    let tip.=name
 
-        " add modified/modifiable flags
-        if getbufvar(bufnr, "&modified")
-            let tip .= ' [+]'
-        endif
-        if getbufvar(bufnr, "&modifiable")==0
-            let tip .= ' [-]'
-        endif
-    endfor
+    " add modified/modifiable flags
+    if getbufvar(bufnr, "&modified")
+      let tip .= ' [+]'
+    endif
+    if getbufvar(bufnr, "&modifiable")==0
+      let tip .= ' [-]'
+    endif
+  endfor
 
-    return tip
+  return tip
 endfunction
 
 set guitablabel=%!GuiTabLabel()
@@ -506,22 +507,22 @@ set guitabtooltip=%!GuiTabToolTip()
 tab all
 
 if has("gui_running")
-    " le focus suit la souris
-    set mousef
-    " le bouton droit affiche une popup
-    set mousemodel=popup_setpos
+  " le focus suit la souris
+  set mousef
+  " le bouton droit affiche une popup
+  set mousemodel=popup_setpos
 endif
 
 "Toggle Menu and Toolbar
 set guioptions-=m
 set guioptions-=T
 map <silent> <F2> :if &guioptions =~# 'T' <Bar>
-\set guioptions-=T <Bar>
-\set guioptions-=m <bar>
-\else <Bar>
-\set guioptions+=T <Bar>
-\set guioptions+=m <Bar>
-\endif<CR>
+      \set guioptions-=T <Bar>
+      \set guioptions-=m <bar>
+      \else <Bar>
+      \set guioptions+=T <Bar>
+      \set guioptions+=m <Bar>
+      \endif<CR>
 
 " minimal number of lines used for the current window
 set wh=1
@@ -551,12 +552,13 @@ set backupdir=~/.vim/backup
 set updatecount=0
 
 " force save with "W" using sudo
+" issue: won't work in gvim :(
 command W w !sudo tee % > /dev/null
 
 " Sauvegarde }}}
 
-" {{{ Mapping
-" certains mapping sont définis dans la section Plugins
+" {{{ Mappings
+" certains mappings sont définis dans la section Plugins
 
 " modifie le <leader> (« \ » par défaut)
 " j'utilise la virgule car sur le clavier bépo, elle est située en plein
@@ -568,11 +570,11 @@ let g:mapleader = ","
 nnoremap <Leader><Leader> <Leader>
 
 " pratique pour ouvrir des fichiers, à défaut d'un auto-cd
-map ,cd :cd %:p:h<CR>
+map <Leader>cd :cd %:p:h<CR>
 
-" navigation spéciale clavier bépo (dvorak)
+" navigation spéciale clavier bépo (dvorak) -- bepo.fr
 " ie. en mode normal/commande, maintenir Alt et utiliser les doigts au
-" repos pour des déplacements rapides sans flèches
+" repos pour des déplacements rapides, sans flèches
 " éventuellement à étendre pour les modes insertion, visuel…
 set winaltkeys=no
 nmap <A-t> gj
@@ -630,6 +632,7 @@ noremap <C-A> gggH<C-O>G
 cnoremap <C-A> <C-C>gggH<C-O>G
 
 " indentation automatique (à la Emacs)
+" je ne suis plus vraiment certain que ça me soit utile…
 vnoremap <C-F>   =$
 vnoremap <tab>   =
 nnoremap <tab>   =$
@@ -650,15 +653,15 @@ cmap <F4> <c-c>:bd!<cr>
 nnoremap <silent> <F8> :Tlist<CR>
 
 if has("gui_running")
-   " Maj-[flèche] pour sélectionner un bloc
-    map  <S-Up>    vk
-    vmap <S-Up>    k
-    map  <S-Down>  vj
-    vmap <S-Down>  j
-    map  <S-Right> v
-    vmap <S-Right> l
-    map  <S-Left>  v
-    vmap <S-Left>  h
+  " Maj-[flèche] pour sélectionner un bloc
+  map  <S-Up>    vk
+  vmap <S-Up>    k
+  map  <S-Down>  vj
+  vmap <S-Down>  j
+  map  <S-Right> v
+  vmap <S-Right> l
+  map  <S-Left>  v
+  vmap <S-Left>  h
 endif
 
 " gestion du caractère NULL dans tous les modes
@@ -675,12 +678,14 @@ map <leader>t :FuzzyFinderTextMate<CR>
 " A (switch between header/code files)
 map <F2> :A<CR>
 
-" Mapping }}}
+" Mappings }}}
 
 " {{{ Plugins
 
-" Here's a raw list of my plugins, located in ~/.vim/plugin/
+" Here's a raw list of my plugins, located in…
 " (http://www.vim.org/scripts/ to find them):
+"
+" ~/.vim/plugin/
 " |-- AlignMapsPlugin.vim
 " |-- AlignPlugin.vim
 " |-- AutoAlign.vim
@@ -719,6 +724,18 @@ map <F2> :A<CR>
 " |-- vimballPlugin.vim
 " |-- vimbuddy.vim
 " `-- vimwiki.vim
+"
+" ~/.vim/after/
+" |-- ftplugin
+" |   |-- c.vim
+" |   |-- cpp.vim
+" |   |-- matlab.vim
+" |   |-- tex.vim
+" |   `-- tex.vim.html
+" `-- plugin
+"     `-- snipMate.vim
+"
+" plus latex-suite, vim-ruby…
 
 " interesting ones but not tested yet:
 " - coding styles per project: http://www.vim.org/scripts/script.php?script_id=2633
@@ -807,20 +824,20 @@ imap <Alt-B> <Plug>Tex_MathBF
 " I changed it the following way so it won't bother me with R/W rights:
 "
 " comment this (3920-3927):
-    "if filereadable(sessionfile)
-    "    let ans = input('Do you want to overwrite ' . sessionfile . ' (Y/N)?')
-    "    if ans !=? 'y'
-    "        return
-    "    endif
-    "
-    "    echo "\n"
-    "endif
+"if filereadable(sessionfile)
+"    let ans = input('Do you want to overwrite ' . sessionfile . ' (Y/N)?')
+"    if ans !=? 'y'
+"        return
+"    endif
+"
+"    echo "\n"
+"endif
 "
 " add this instead (uncomment!):
 "
-    "if !filereadable(sessionfile)
-    "  return
-    "endif
+"if !filereadable(sessionfile)
+"  return
+"endif
 
 " open tags on Vim startup
 let Tlist_Auto_Open = 1
@@ -879,7 +896,7 @@ if has("autocmd")
     autocmd FileType xml        set omnifunc=xmlcomplete#CompleteTags
     autocmd FileType php        set omnifunc=phpcomplete#CompletePHP
     autocmd FileType c          set omnifunc=ccomplete#Complete
-    
+
     " un peu plus complet pour Ruby et affiliés : http://vim-ruby.rubyforge.org
     autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
     autocmd FileType ruby,eruby let g:rubycomplete_buffer_loading = 1
@@ -963,36 +980,36 @@ au VimEnter * call VimEnter()
 let g:PathToSessions = $HOME . "/.vim/sessions/"
 
 function! VimEnter() 
-    if argc() == 0 " si aucun nom de fichier donné, on peut proposer d'ouvrir une session
-        let result       = "Sessions disponibles :"
-        let sessionfiles = glob(g:PathToSessions . "*.vim")
-        while stridx(sessionfiles, "\n") >= 0
-            let index        = stridx(sessionfiles, "\n")
-            let sessionfile  = strpart(sessionfiles, 0, index)
-            let result       = result . "\n " . fnamemodify(sessionfile, ":t:r")
-            let sessionfiles = strpart(sessionfiles, index + 1)
-        endwhile
-        let result      = result . "\n " . fnamemodify(sessionfiles, ":t:r")
-        let result      = result . "\n" . "\n" . "Donnez un nom de session (ou aucun pour démarrer avec un nouveau buffer vide) : "
-        let sessionname = input(result)
-        if sessionname != ""
-            exe "source " . g:PathToSessions . sessionname . ".vim"
-            exec "TlistSessionLoad " . g:PathToSessions . sessionname . ".vim.tags"
-        endif
+  if argc() == 0 " si aucun nom de fichier donné, on peut proposer d'ouvrir une session
+    let result       = "Sessions disponibles :"
+    let sessionfiles = glob(g:PathToSessions . "*.vim")
+    while stridx(sessionfiles, "\n") >= 0
+      let index        = stridx(sessionfiles, "\n")
+      let sessionfile  = strpart(sessionfiles, 0, index)
+      let result       = result . "\n " . fnamemodify(sessionfile, ":t:r")
+      let sessionfiles = strpart(sessionfiles, index + 1)
+    endwhile
+    let result      = result . "\n " . fnamemodify(sessionfiles, ":t:r")
+    let result      = result . "\n" . "\n" . "Donnez un nom de session (ou aucun pour démarrer avec un nouveau buffer vide) : "
+    let sessionname = input(result)
+    if sessionname != ""
+      exe "source " . g:PathToSessions . sessionname . ".vim"
+      exec "TlistSessionLoad " . g:PathToSessions . sessionname . ".vim.tags"
     endif
+  endif
 endfunction
 
 function! VimLeave()
-    exe "mksession! " . g:PathToSessions . "LastSession.vim"
+  exe "mksession! " . g:PathToSessions . "LastSession.vim"
 
-    if exists("g:SessionFileName") == 1
-        if g:SessionFileName != ""
-            exe "mksession! " . g:SessionFileName
-            exec "TlistSessionSave " . g:SessionFileName . ".tags"
-        endif
-    else
-        exec "TlistSessionSave " . g:PathToSessions . "LastSession.vim.tags"
+  if exists("g:SessionFileName") == 1
+    if g:SessionFileName != ""
+      exe "mksession! " . g:SessionFileName
+      exec "TlistSessionSave " . g:SessionFileName . ".tags"
     endif
+  else
+    exec "TlistSessionSave " . g:PathToSessions . "LastSession.vim.tags"
+  endif
 endfunction
 
 " création d'une nouvelle session avec :SetSession "[nom]"
@@ -1016,10 +1033,10 @@ function! s:RunShellCommand(cmdline)
   echo a:cmdline
   let expanded_cmdline = a:cmdline
   for part in split(a:cmdline, ' ')
-     if part[0] =~ '\v[%#<]'
-        let expanded_part = fnameescape(expand(part))
-        let expanded_cmdline = substitute(expanded_cmdline, part, expanded_part, '')
-     endif
+    if part[0] =~ '\v[%#<]'
+      let expanded_part = fnameescape(expand(part))
+      let expanded_cmdline = substitute(expanded_cmdline, part, expanded_part, '')
+    endif
   endfor
   botright new
   setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
