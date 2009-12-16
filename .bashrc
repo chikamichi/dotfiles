@@ -90,6 +90,7 @@ alias la='ls -A'
 alias lla='ls -al'
 alias l='ls -CF'
 alias rm='rm -i'
+alias cpf='cp'
 alias cp='cp -i'
 
 # system
@@ -147,9 +148,8 @@ alias gcc='gcc -pedantic -W -Wall -lm'
 alias 'gcc+ansi'='gcc -ansi'
 alias 'gcc+c99'='gcc -std=c99'
 alias gfortran='gfortran -pedantic -Wextra -Wall -fimplicit-none -Wunused -ftrapv -fexceptions'
-alias g95='gfortran -std=f95'
-alias g2003='gfortran -std=f2003'
-alias irb='irb1.8'
+alias g95='gfortran -std=f95 -llapack -lblas'
+alias g2003='gfortran -std=f2003 -llapack -lblas'
 
 # git
 alias 'git-remove'='git update-index --force-remove'
@@ -193,6 +193,9 @@ export GTK_IM_MODULE=xim
 
 # https://help.ubuntu.com/community/GnuPrivacyGuardHowto
 export GPGKEY=692C50E8
+
+# NCL
+export NCARG_ROOT=/usr/local
 
 # }}}
 

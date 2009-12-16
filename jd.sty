@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{jd}[2009/05/11 Extension personnelle, V1.1]
+\ProvidesPackage{jd}[11/05/2009 Extension personnelle <jd@vauguet.fr>, v1.1]
 
 \RequirePackage{xkeyval}
 \RequirePackage{ifthen}
@@ -45,6 +45,7 @@
     \CurrentOption}}
 
 % booleans pour les options
+\newif \if@draft     \@draftfalse
 \newif \if@fr        \@frfalse
 \newif \if@maths     \@mathsfalse
 \newif \if@tensoriel \@tensorielfalse
@@ -56,6 +57,7 @@
 \setboolean{beameron}{false}
 
 % déclaration des options simples (les traitements sont à la fin du fichier)
+\DeclareOption{draft}{\@drafttrue}
 \DeclareOption{fr}{\@frtrue}
 \DeclareOption{maths}{\@mathstrue}
 \DeclareOption{tensoriel}{\@tensorieltrue}
@@ -91,12 +93,12 @@
 \RequirePackage[normalem]{ulem}
 \RequirePackage{pstricks}
 %\RequirePackage{color}
-\RequirePackage{graphicx}
 \RequirePackage{subfigure}
 \RequirePackage{epstopdf}           % converti les .eps en .pdf à la volée
 %\RequirePackage{psfrag}             % pour laprint
 %\RequirePackage{pstricks-add,pst-plot,pst-node}  % pour fig2tex
 \RequirePackage{url}
+\RequirePackage[toc,page]{appendix} 
 
 % chargement des extensions spécifiques pour les classes (hors options)
 \ifthenelse{\boolean{beameron}}{%
@@ -148,6 +150,13 @@
         urlcolor=magenta
     }
 }
+
+% mode brouillon, désactive les images etc.
+\if@draft{
+  \RequirePackage[draft]{graphicx}
+\else
+  \RequirePackage{graphicx}
+\fi
 
 \hypersetup{
     pdfauthor={Jean-Denis Vauguet <jd@vauguet.fr>},
@@ -280,7 +289,10 @@
     \RequirePackage{amsmath}
     \RequirePackage{amssymb}
     \RequirePackage{cases}
-    \RequirePackage[mathcal,mathbf]{euler}  % polices mathématique droite
+    %\usepackage{ccfonts}
+    %\usepackage{cmbright}
+    %\usepackage{ccfonts,eulervm}
+    %\RequirePackage[mathcal,mathbf]{euler}  % polices mathématique droite
 %    \RequirePackage{mathabx}                % symboles de la Terre et du Soleil
 
     % declaration spécifiques pour les maths
@@ -297,7 +309,8 @@
     \newcommand{\eeqan}{\end{align*}}
 
     \newcommand{\vectfleche}[1]{\overrightarrow{#1}}
-    \newcommand{\vect}[1]{\textbf{#1}}
+    %\newcommand{\vect}[1]{\textbf{#1}}
+    \newcommand{\vect}[1]{\boldsymbol{#1}}  % boldsymbol permet de traiter les lettres grecques minuscules…
     \newcommand{\vv}{\vect{v}}
     \newcommand{\vf}{\vect{f}}
     \newcommand{\vu}{\vect{u}}
@@ -307,7 +320,7 @@
     \newcommand{\viscbulk}{\visc_{\textrm{B}}}
     \newcommand{\pression}{\textrm{P}}
 
-    \newcommand{\phase}{k_x x + k_y y - \omega t}
+    \newcommand{\phase}{\vect{k} \vect{x} - \omega t}
     \newcommand{\eip}{\e{i\Phi}}
     \newcommand{\neip}{\e{-i\Phi}}
     \newcommand{\tildesur}[1]{\tilde{#1}}
@@ -333,6 +346,10 @@
     \newcommand{\pc}{\pression_0}
     \newcommand{\pp}{\pression_1}
 
+    % flux, diffusion
+    \newcommand{\Fz}{\text{Fz}}
+    \newcommand{\Kz}{\text{Kz}}
+
     \newcommand{\vectnabla}{\boldnabla}
     %\newcommand{\laplacien}[1]{\vectnabla^2 #1}           % Laplacien
     \newcommand{\laplacien}[1]{\boldsymbol{\Delta} #1}           % Laplacien
@@ -350,6 +367,9 @@
     \newcommand{\delt}[1]{\frac{\del #1}{\del t}}           % del ? / delt
     \newcommand{\deltet}[1]{\frac{\del #1}{\del t^*}}       % del ? / delt*
     \newcommand{\deli}[2]{\frac{\del #1}{\del #2}}          % del ? / del?
+    \newcommand{\deltensorx}[1]{\frac{\del #1}{\del \vect x_i}}   % del ? / del?_i
+    \newcommand{\deltensor}[2]{\frac{\del #1}{\del #2_i}}   % del ? / del?_i
+    \newcommand{\deltensork}[3]{\frac{\del #1}{\del #2_{#3}}}   % del ? / del?_i
 
     \newcommand{\delxs}[1]{\frac{\del^2 #1}{\del x^2}}      % del^2 ? / delx^2
     \newcommand{\delys}[1]{\frac{\del^2 #1}{\del y^2}}      % del^2 ? / dely^2
@@ -369,6 +389,7 @@
     \newcommand{\dts}[1]{\frac{\textrm{d}^2 #1}{\textrm{d}t^2}}  % d^2 ? / dt^2
     \newcommand{\dis}[2]{\frac{\textrm{d}^2 #1}{\textrm{d}#2^2}} % d^2 ? / d?^2
 
+    \newcommand{\ii}{\imath}                                % imaginary i (no dot)
     \newcommand{\ex}[1]{\exp{ \left\{ #1 \right\}}}         % exp{?}
     \newcommand{\ep}[1]{\textrm{e}^{\left( #1 \right) }}    % e^(?)
     \newcommand{\e}[1]{\textrm{e}^{#1}}                     % e^?

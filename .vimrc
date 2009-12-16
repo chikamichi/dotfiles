@@ -324,7 +324,7 @@ set list
 " http://vimcolorschemetest.googlecode.com/svn/html/index-c.html
 "colorscheme zenburn
 "colorscheme blackdust
-colorscheme eclm_wombat " un peu modifié, en réalité :)
+colorscheme eclm_wombat " un peu modifié pour coller à mon thème Metacity, en réalité
 
 if has("gui_running")
   " tente de maximiser la fenêtre GVim (problème avec Gnome et Metacity
@@ -344,15 +344,6 @@ if has("gui_running")
     set guioptions-=mT
   endif
 endif
-
-" couleurs des numéros de lignes
-"hi LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
-" couleurs des folds
-"hi Folded ctermbg=LightGreen ctermfg=white guibg=DarkOliveGreen guifg=ivory
-
-"" couleurs plus sympas pour les pop-up et menus
-":highlight Pmenu    guibg=brown   gui=bold
-":highlight PmenuSel guibg=DarkRed gui=bold
 
 " how many lines to sync backwards
 syn sync minlines=10000 maxlines=10000
