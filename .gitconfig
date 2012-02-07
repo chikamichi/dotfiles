@@ -1,0 +1,49 @@
+[user]
+  name = Jean-Denis Vauguet
+  email = jd@vauguet.fr
+[github]
+  user = chikamichi
+  token = XXXXSECRETXXXX
+[alias]
+  a   = add
+  amend = commit --amend -C HEAD
+  br  = branch
+  ba  = branch -a
+  bc  = branch --contains
+  bm  = branch --merged
+  bn  = branch --no-merged
+  ch  = cherry-pick
+  ci  = commit
+  co  = checkout
+  ds  = describe
+  df  = diff --word-diff
+  fe  = fetch -p -a
+  ft  = fetch -t
+  hub = push origin master
+  i   = remote -v
+  l   = log
+  la  = log -p -1 HEAD
+  lo  = log -p
+  lol = log --graph --pretty=format:'%Cred%h%Creset - %Cblue%ae%Creset %Cgreen(%cr)%Creset %s%C(yellow)%d%Creset' --abbrev-commit --date=relative
+  pl  = pull
+  ph  = push
+  pr  = pull --rebase
+  sm  = submodule update
+  st  = status -s
+  staged = diff --cached
+  unadd = reset HEAD
+[color]
+  ui = auto
+  branch = auto
+  diff = auto
+  interactive = auto
+  status = auto
+[core]
+  editor = vim
+  autocrlf = input
+[push]
+  default = current
+[rerere]
+  enabled = 1
+[commit]
+  template = /home/jd/.git-commit-template
