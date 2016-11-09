@@ -1,49 +1,40 @@
 [user]
   name = Jean-Denis Vauguet
   email = jd@vauguet.fr
+  signinKey = # REPLACE WITH ACTUAL VALUE
 [github]
   user = chikamichi
-  token = XXXXSECRETXXXX
+  token = # REPLACE WITH ACTUAL VALUE
 [alias]
-  a   = add
-  amend = commit --amend -C HEAD
-  br  = branch
-  ba  = branch -a
-  bc  = branch --contains
-  bm  = branch --merged
-  bn  = branch --no-merged
-  ch  = cherry-pick
-  ci  = commit
-  co  = checkout
-  ds  = describe
-  df  = diff --word-diff
-  fe  = fetch -p -a
-  ft  = fetch -t
-  hub = push origin master
-  i   = remote -v
-  l   = log
-  la  = log -p -1 HEAD
-  lo  = log -p
-  lol = log --graph --pretty=format:'%Cred%h%Creset - %Cblue%ae%Creset %Cgreen(%cr)%Creset %s%C(yellow)%d%Creset' --abbrev-commit --date=relative
-  pl  = pull
-  ph  = push
-  pr  = pull --rebase
-  sm  = submodule update
-  st  = status -s
+  br = branch
+  ca = commit --amend
+  ci = commit
+  co = checkout
+  grep = grep -p
+  l = log --oneline --graph --decorate
+  logsigned = log --show-signature -1
+  oops = commit --amend --no-edit
+  pr = pull --rebase
+  st = status -sb
   staged = diff --cached
-  unadd = reset HEAD
 [color]
-  ui = auto
+  ui = 1
   branch = auto
   diff = auto
   interactive = auto
   status = auto
 [core]
   editor = vim
+  whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+  excludesfile = ~/.gitignore
   autocrlf = input
+  compression = 9
 [push]
   default = current
 [rerere]
-  enabled = 1
+  enabled = 0
+  # autoupdate = 1
 [commit]
   template = /home/jd/.git-commit-template
+[help]
+  autocorrect = 1
