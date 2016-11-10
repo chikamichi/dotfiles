@@ -62,7 +62,7 @@ ZSH_THEME="pure"
 # Installed manually (by cloning the repos in ~/.oh-my-zsh/custom/plugins):
 # - zsh-autosuggestions
 # - zsh-syntax-highlighting
-plugins=(colored-man-pages command-not-found git tmux tmuxinator colorize zsh-syntax-highlight ssh-agent zsh-autosuggestions)
+plugins=(colored-man-pages command-not-found git tmuxinator colorize zsh-syntax-highlight ssh-agent zsh-autosuggestions)
 
 export PATH="$HOME/opt:$HOME/opt/bin:$HOME/opt/node/bin:$HOME/dev:$PATH"
 
