@@ -5,7 +5,7 @@
 DISABLE_UPDATE_PROMPT=true
 
 # Path to your oh-my-zsh installation.
-  export ZSH=/home/jd/.oh-my-zsh
+export ZSH=/home/jd/.oh-my-zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -64,7 +64,8 @@ ZSH_THEME="pure"
 # - zsh-syntax-highlighting
 plugins=(colored-man-pages command-not-found git tmuxinator colorize zsh-syntax-highlight ssh-agent zsh-autosuggestions)
 
-export PATH="$HOME/opt:$HOME/opt/bin:$HOME/opt/node/bin:$HOME/dev:$PATH"
+export PATH=$HOME/opt:$HOME/opt/bin:$HOME/opt/node/bin:$HOME/dev:$PATH
+export PATH=~/.ellipsis/bin:$PATH
 
 source $ZSH/oh-my-zsh.sh
 source /home/jd/.local/bin/aws_zsh_completer.sh
