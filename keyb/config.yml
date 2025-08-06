@@ -1,0 +1,21 @@
+settings:
+  prefix_sep: "+"
+  sep_width: 10
+  border: rounded
+  prompt: "Search: "
+
+color:
+  prompt: "#00ff88" # Bright green for prompt
+  cursor_fg: "#ffffff" # White cursor foreground
+  cursor_bg: "#ff6b35" # Vibrant orange cursor background
+  filter_fg: "#ffff00" # Bright yellow for matching text
+  filter_bg: "#1a1a1a" # Dark gray background for matches
+  counter_fg: "#ff69b4" # Hot pink for counter
+  counter_bg: "#2d2d2d" # Dark background for counter
+  placeholder_fg: "#888888" # Medium gray for placeholder
+  placeholder_bg: "#000000" # Black background for placeholder
+  border_color: "#00bfff" # Deep sky blue for border
+
+keys:
+  up_focus: ctrl+k, up
+  down_focus: ctrl+j, down
